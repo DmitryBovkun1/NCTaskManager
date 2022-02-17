@@ -1,25 +1,23 @@
-package ua.edu.sumdu.j2se.Bovkun.tasks;
-
-import java.util.ArrayList;
+package ua.edu.sumdu.j2se.bovkun.tasks;
 
 public class ArrayTaskList {
     //ArrayList<Task> TaskList = new ArrayList<>();
-    Task[] TaskList = new Task[4];
+    Task[] taskList = new Task[4];
     int size = 0;
 
     public void add(Task task)
     {
         /*TaskList.add(task);*/
         size++;
-        if(TaskList.length < size)
+        if(taskList.length < size)
         {
-            int tempSize=2*TaskList.length+1;
-            Task[] TempTaskList = new Task[tempSize];
-            System.arraycopy(TaskList, 0, TempTaskList, 0, TaskList.length);
-            TaskList = new Task[tempSize];
-            System.arraycopy(TempTaskList, 0, TaskList, 0, TempTaskList.length);
+            int tempSize=2*taskList.length+1;
+            Task[] tempTaskList = new Task[tempSize];
+            System.arraycopy(taskList, 0, tempTaskList, 0, taskList.length);
+            taskList = new Task[tempSize];
+            System.arraycopy(tempTaskList, 0, taskList, 0, tempTaskList.length);
         }
-        TaskList[size-1]=task;
+        taskList[size-1]=task;
     }
     public boolean remove(Task task)
     {
@@ -37,7 +35,7 @@ public class ArrayTaskList {
         int index = -1;
         for(int i = 0; i < size; i++)
         {
-            if(TaskList[i] == task)
+            if(taskList[i] == task)
             {
                 index = i;
                 break;
@@ -50,7 +48,7 @@ public class ArrayTaskList {
 
         for(int i = index; i < size - 1; i++)
         {
-            TaskList[i] = TaskList[i+1];
+            taskList[i] = taskList[i+1];
         }
         size--;
         return true;
@@ -62,7 +60,7 @@ public class ArrayTaskList {
     }
     public Task getTask(int index)
     {
-        return TaskList[index];
+        return taskList[index];
         //return TaskList.get(index);
     }
     public ArrayTaskList incoming(int from, int to)
@@ -70,13 +68,13 @@ public class ArrayTaskList {
         ArrayTaskList resultList = new ArrayTaskList();
         for(int i = 0; i < size(); i++)
         {
-            /*if((TaskList.get(i).getStartTime() > from && TaskList.get(i).getEndTime() < to) && TaskList.get(i).isActive())
+            /*if((TaskList[i].nextTimeAfter(from) != -1 && TaskList[i].nextTimeAfter(from) <= to) && TaskList.get(i).isActive())
             {
                 resultList.add(TaskList.get(i));
             }*/
-            if((TaskList[i].getStartTime() > from && TaskList[i].getEndTime() < to) && TaskList[i].isActive())
+            if((taskList[i].nextTimeAfter(from) != -1 && taskList[i].nextTimeAfter(from) <= to) && taskList[i].isActive())
             {
-                resultList.add(TaskList[i]);
+                resultList.add(taskList[i]);
             }
         }
         return resultList;

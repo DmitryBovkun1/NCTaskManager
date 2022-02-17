@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.Bovkun.tasks;
+package ua.edu.sumdu.j2se.bovkun.tasks;
 
 public class Main {
 
