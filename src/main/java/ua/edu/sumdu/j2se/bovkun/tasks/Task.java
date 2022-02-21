@@ -11,15 +11,27 @@ public class Task {
 
     public Task(String title, int time)
     {
-        repeated=false;
-        setTitle(title);
-        setTime(time);
+        if(time >= 0) {
+            repeated = false;
+            setTitle(title);
+            setTime(time);
+        }
+        else
+        {
+            throw new IllegalArgumentException();
+        }
     }
     public Task(String title, int start, int end, int interval)
     {
-        repeated=true;
-        setTitle(title);
-        setTime(start, end, interval);
+        if(start >= 0 && end >= 0 && interval > 0) {
+            repeated = true;
+            setTitle(title);
+            setTime(start, end, interval);
+        }
+        else
+        {
+            throw new IllegalArgumentException();
+        }
     }
     public String getTitle()
     {
@@ -49,9 +61,14 @@ public class Task {
     }
     public void setTime(int time)
     {
-        this.time = time;
-        if(isRepeated()) {
-            repeated=false;
+        if(time >= 0) {
+            this.time = time;
+            if (isRepeated()) {
+                repeated = false;
+            }
+        }
+        else {
+            throw new IllegalArgumentException();
         }
     }
     public int getStartTime()
@@ -84,12 +101,17 @@ public class Task {
     }
     public void setTime(int start, int end, int interval)
     {
-        this.start=start;
-        this.end=end;
-        this.interval=interval;
-        if(!isRepeated())
+        if(start >= 0 && end >= 0 && interval > 0) {
+            this.start = start;
+            this.end = end;
+            this.interval = interval;
+            if (!isRepeated()) {
+                repeated = true;
+            }
+        }
+        else
         {
-            repeated=true;
+            throw new IllegalArgumentException();
         }
     }
     public boolean isRepeated()

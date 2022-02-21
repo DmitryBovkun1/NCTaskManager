@@ -1,5 +1,7 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
+import java.util.LinkedList;
+
 public class ArrayTaskList {
     //ArrayList<Task> TaskList = new ArrayList<>();
     Task[] taskList = new Task[4];
@@ -7,17 +9,22 @@ public class ArrayTaskList {
 
     public void add(Task task)
     {
-        /*TaskList.add(task);*/
-        size++;
-        if(taskList.length < size)
-        {
-            int tempSize=2*taskList.length+1;
-            Task[] tempTaskList = new Task[tempSize];
-            System.arraycopy(taskList, 0, tempTaskList, 0, taskList.length);
-            taskList = new Task[tempSize];
-            System.arraycopy(tempTaskList, 0, taskList, 0, tempTaskList.length);
+        if(task != null) {
+            /*TaskList.add(task);*/
+            size++;
+            if (taskList.length < size) {
+                int tempSize = 2 * taskList.length + 1;
+                Task[] tempTaskList = new Task[tempSize];
+                System.arraycopy(taskList, 0, tempTaskList, 0, taskList.length);
+                taskList = new Task[tempSize];
+                System.arraycopy(tempTaskList, 0, taskList, 0, tempTaskList.length);
+            }
+            taskList[size - 1] = task;
         }
-        taskList[size-1]=task;
+        else
+        {
+            throw new IllegalArgumentException();
+        }
     }
     public boolean remove(Task task)
     {
@@ -60,8 +67,14 @@ public class ArrayTaskList {
     }
     public Task getTask(int index)
     {
-        return taskList[index];
-        //return TaskList.get(index);
+        if(index >= 0 && index <= size) {
+            return taskList[index];
+            //return TaskList.get(index);
+        }
+        else
+        {
+            throw new IndexOutOfBoundsException();
+        }
     }
     public ArrayTaskList incoming(int from, int to)
     {
