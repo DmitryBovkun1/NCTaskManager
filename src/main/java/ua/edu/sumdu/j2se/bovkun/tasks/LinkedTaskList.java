@@ -2,7 +2,7 @@ package ua.edu.sumdu.j2se.bovkun.tasks;
 
 import java.util.List;
 
-public class LinkedTaskList {
+public class LinkedTaskList extends AbstractTaskList{
     int size = 0;
     Node<Task> first;
     Node<Task> last;
@@ -81,17 +81,5 @@ public class LinkedTaskList {
         else {
             throw new IndexOutOfBoundsException();
         }
-    }
-    public LinkedTaskList incoming(int from, int to)
-    {
-        LinkedTaskList resultList = new LinkedTaskList();
-        for(int i = 0; i < size; i++)
-        {
-            if(getTask(i).nextTimeAfter(from) != -1 && getTask(i).nextTimeAfter(from) <= to)
-            {
-                resultList.add(getTask(i));
-            }
-        }
-        return resultList;
     }
 }

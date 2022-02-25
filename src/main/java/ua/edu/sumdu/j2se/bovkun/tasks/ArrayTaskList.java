@@ -2,7 +2,7 @@ package ua.edu.sumdu.j2se.bovkun.tasks;
 
 import java.util.LinkedList;
 
-public class ArrayTaskList {
+public class ArrayTaskList extends AbstractTaskList{
     //ArrayList<Task> TaskList = new ArrayList<>();
     Task[] taskList = new Task[4];
     int size = 0;
@@ -75,21 +75,5 @@ public class ArrayTaskList {
         {
             throw new IndexOutOfBoundsException();
         }
-    }
-    public ArrayTaskList incoming(int from, int to)
-    {
-        ArrayTaskList resultList = new ArrayTaskList();
-        for(int i = 0; i < size(); i++)
-        {
-            /*if((TaskList[i].nextTimeAfter(from) != -1 && TaskList[i].nextTimeAfter(from) <= to) && TaskList.get(i).isActive())
-            {
-                resultList.add(TaskList.get(i));
-            }*/
-            if((taskList[i].nextTimeAfter(from) != -1 && taskList[i].nextTimeAfter(from) <= to) && taskList[i].isActive())
-            {
-                resultList.add(taskList[i]);
-            }
-        }
-        return resultList;
     }
 }
