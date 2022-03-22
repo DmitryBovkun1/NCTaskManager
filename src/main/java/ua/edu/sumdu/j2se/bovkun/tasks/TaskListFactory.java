@@ -1,12 +1,8 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
-class ListTypes {
-    public enum types{ARRAY, LINKED}
-}
 public class TaskListFactory {
     static public AbstractTaskList createTaskList(ListTypes.types type) {
-        if(type.equals(ListTypes.types.ARRAY))
-        {
+        if(type.equals(ListTypes.types.ARRAY)) {
             return new ArrayTaskList();
         }
         else

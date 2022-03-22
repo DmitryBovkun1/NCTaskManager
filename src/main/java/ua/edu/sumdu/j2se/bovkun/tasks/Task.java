@@ -1,5 +1,7 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
+import java.util.Objects;
+
 public class Task {
     private String title;
     private int time;
@@ -8,6 +10,15 @@ public class Task {
     private int interval;
     private boolean active=false;
     private boolean repeated;
+
+    public Task(){}
+
+    public Task(String title)
+    {
+        repeated = false;
+        setTitle(title);
+        setTime(0);
+    }
 
     public Task(String title, int time)
     {
@@ -32,6 +43,15 @@ public class Task {
         {
             throw new IllegalArgumentException();
         }
+    }
+    public Task(String title, int time, int start, int end, int interval, boolean active, boolean repeat) {
+        this.title = title;
+        this.active = active;
+        this.repeated = repeat;
+        this.time = time;
+        this.start = start;
+        this.end = end;
+        this.interval = interval;
     }
     public String getTitle()
     {
@@ -148,5 +168,72 @@ public class Task {
             }
         }
         return -1;
+    }
+
+    @Override
+    public String toString()
+    {
+        String temp = "Название - " + this.title + ", Активна - ";
+        if(this.active)
+        {
+            temp += "Да";
+        }
+        else
+        {
+            temp += "Нет";
+        }
+        temp += ", Есть повтор - ";
+        if(this.repeated)
+        {
+            temp += "Да";
+            temp += ", Начало - " + this.start + ", Конец - " + this.end + ", Интервал - " + this.interval + "\n";
+        }
+        else
+        {
+            temp += "Нет";
+            temp += ", Время - " + this.time + "\n";
+        }
+        return temp;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.title, this.active, this.repeated, this.time, this.start, this.end, this.interval);
+    }
+
+    @Override
+    public Task clone()
+    {
+        //return new Task(this.title, this.time, this.start, this.end, this.interval, this.active, this.repeated);
+        Task temp = new Task();
+        temp.title = this.title;
+        temp.active = this.active;
+        temp.repeated = this.repeated;
+        temp.time = this.time;
+        temp.start = this.start;
+        temp.end = this.end;
+        temp.interval = this.interval;
+        return temp;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(obj instanceof Task)
+        {
+            return true;
+        }
+        Task convert = (Task) obj;
+        if(this.repeated != convert.repeated || this.active != convert.active || this.time != convert.time
+                || !Objects.equals(this.title, convert.title) || this.interval != convert.interval
+                || this.start != convert.start || this.end != convert.end)
+        {
+            return false;
+        }
+        return true;
     }
 }
