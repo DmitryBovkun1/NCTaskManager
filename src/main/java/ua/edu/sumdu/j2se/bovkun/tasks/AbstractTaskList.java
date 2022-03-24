@@ -1,6 +1,6 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
-import java.lang.reflect.Array;
+import java.util.stream.Stream;
 
 public abstract class AbstractTaskList implements Iterable<Task> {
     public abstract void add(Task task);
@@ -77,4 +77,5 @@ public abstract class AbstractTaskList implements Iterable<Task> {
         }
         return temp;
     }
+    public abstract Stream<Task> getStream();
 }
