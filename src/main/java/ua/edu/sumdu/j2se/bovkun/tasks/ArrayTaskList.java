@@ -82,6 +82,7 @@ public class ArrayTaskList extends AbstractTaskList{
 
             @Override
             public void remove() {
+                if (index < 0) throw new IllegalStateException("Итератор на нулевом элементе!");
                 ArrayTaskList.this.remove(getTask(index));
                 index--;
             }
@@ -104,18 +105,6 @@ public class ArrayTaskList extends AbstractTaskList{
         {
             throw new IndexOutOfBoundsException();
         }
-    }
-
-    @Override
-    public String toString()
-    {
-        String temp = "";
-        for(int i = 0; i < size(); i++)
-        {
-            temp += "ЗАДАЧА № " + (i + 1) + "\n";
-            temp += getTask(i).toString() + "\n";
-        }
-        return temp;
     }
 
     @Override

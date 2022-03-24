@@ -83,6 +83,7 @@ public class LinkedTaskList extends AbstractTaskList{
             }
 
             public void remove() {
+                if (index < 0) throw new IllegalStateException("Итератор на нулевом элементе!");
                 LinkedTaskList.this.remove(getTask(index));
                 --index;
             }
@@ -110,17 +111,7 @@ public class LinkedTaskList extends AbstractTaskList{
             throw new IndexOutOfBoundsException();
         }
     }
-    @Override
-    public String toString()
-    {
-        String temp = "";
-        for(int i = 0; i < size(); i++)
-        {
-            temp += "ЗАДАЧА № " + (i + 1) + "\n";
-            temp += getTask(i).toString() + "\n";
-        }
-        return temp;
-    }
+
     @Override
     public LinkedTaskList clone() {
         return (LinkedTaskList) super.clone();
