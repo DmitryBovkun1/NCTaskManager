@@ -1,5 +1,6 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 public abstract class AbstractTaskList implements Iterable<Task> {
@@ -7,12 +8,12 @@ public abstract class AbstractTaskList implements Iterable<Task> {
     public abstract boolean remove(Task task);
     public abstract int size();
     public abstract Task getTask(int index);
-    public final AbstractTaskList incoming(int from, int to)
+    public final AbstractTaskList incoming(LocalDateTime from, LocalDateTime to)
     {
         AbstractTaskList resultList = TaskListFactory.createTaskList(ListTypes.getTypeList(this));
         for(int i = 0; i < size(); i++)
         {
-            if(getTask(i).nextTimeAfter(from) != -1 && getTask(i).nextTimeAfter(from) <= to)
+            if(getTask(i).nextTimeAfter(from) != null && getTask(i).nextTimeAfter(from).compareTo(to) <= 0)
             {
                 resultList.add(getTask(i));
             }

@@ -2,7 +2,7 @@ package ua.edu.sumdu.j2se.bovkun.tasks;
 
 public class ListTypes {
     public enum types{ARRAY, LINKED}
-    public static types getTypeList(AbstractTaskList taskObj) {
+    public static types getTypeList(Iterable<Task> taskObj) {
         if(taskObj instanceof LinkedTaskList)
         {
             return types.LINKED;
