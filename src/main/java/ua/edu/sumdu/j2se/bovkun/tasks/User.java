@@ -9,7 +9,12 @@ import java.util.Scanner;
 public class User implements Observer {
     String name;
 
-    public User() {}
+    public User() {
+        String localDir = System.getProperty("user.dir");
+        localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/";
+        File file = new File(localDir);
+        file.mkdirs();
+    }
 
     public void customFileEvent(AbstractTaskList abstractTaskList) throws IOException
     {
