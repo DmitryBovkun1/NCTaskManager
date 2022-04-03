@@ -99,6 +99,10 @@ public class Task implements Serializable {
     {
         this.active=active;
     }
+    public void setRepeated(boolean repeated)
+    {
+        this.repeated=repeated;
+    }
     public LocalDateTime getTime()
     {
         if(!isRepeated()) {

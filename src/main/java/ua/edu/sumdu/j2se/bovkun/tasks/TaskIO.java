@@ -9,6 +9,10 @@ import java.time.*;
 public class TaskIO {
     public static void write(AbstractTaskList tasks, OutputStream out) throws IOException
     {
+        if (out == null) throw new IllegalArgumentException("Ошибка потока!");
+
+        if (tasks == null) throw new IllegalArgumentException("Задачи не обнаружены!");
+
         DataOutputStream stream = new DataOutputStream(out);
         stream.writeInt(tasks.size());
         for(int i = 0; i < tasks.size(); i++)
@@ -37,6 +41,10 @@ public class TaskIO {
     }
     public static void read(AbstractTaskList tasks, InputStream in) throws IOException
     {
+        if (in == null) throw new IllegalArgumentException("Ошибка потока!");
+
+        if (tasks == null) throw new IllegalArgumentException("Задачи не обнаружены!");
+
         DataInputStream stream = new DataInputStream(in);
         int size = stream.readInt();
         for(int i = 0; i < size; i++)
@@ -63,28 +71,39 @@ public class TaskIO {
     }
     public static void writeBinary(AbstractTaskList tasks, File file) throws IOException
     {
+        if (tasks == null) throw new IllegalArgumentException("Задачи не обнаружены!");
+
+        if (file == null) throw new IllegalArgumentException("Файла не существует!");
+
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         TaskIO.write(tasks, fileOutputStream);
     }
     public static void readBinary(AbstractTaskList tasks, File file) throws IOException
     {
+        if (tasks == null) throw new IllegalArgumentException("Задачи не обнаружены!");
+
+        if (file == null) throw new IllegalArgumentException("Файла не существует!");
+
         FileInputStream fileInputStream = new FileInputStream(file);
         TaskIO.read(tasks, fileInputStream);
     }
     public static void write(AbstractTaskList tasks, Writer out) throws IOException
     {
+        if (out == null) throw new IllegalArgumentException("Ошибка записи!");
+
+        if (tasks == null) throw new IllegalArgumentException("Задачи не обнаружены!");
+
         GsonBuilder gson = new GsonBuilder();
-        out.write(gson.setPrettyPrinting().registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
-            @Override
-            public JsonElement serialize(LocalDateTime localDateTime, Type type, JsonSerializationContext jsonSerializationContext) {
-                return new JsonPrimitive(ZonedDateTime.of(localDateTime, ZoneId.systemDefault()).toInstant().toEpochMilli()
-                );
-            }
-        }).create().toJson(tasks));
+        out.write(gson.setPrettyPrinting().registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (localDateTime, type, jsonSerializationContext) -> new JsonPrimitive(ZonedDateTime.of(localDateTime, ZoneId.systemDefault()).toInstant().toEpochMilli()
+        )).create().toJson(tasks));
         out.flush();
     }
     public static void read(AbstractTaskList tasks, Reader in) throws IOException
     {
+        if (tasks == null) throw new IllegalArgumentException("Задачи не обнаружены!");
+
+        if (in == null) throw new IllegalArgumentException("Ошибка чтения!");
+
         GsonBuilder gson = new GsonBuilder();
         gson.registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
             @Override
@@ -99,11 +118,25 @@ public class TaskIO {
     }
     public static void writeText(AbstractTaskList tasks, File file) throws IOException
     {
-        FileWriter fileWriter = new FileWriter(file);
-        TaskIO.write(tasks, fileWriter);
+        try {
+            if (file == null) throw new IllegalArgumentException("Файла не существует!");
+
+            if (tasks == null) throw new IllegalArgumentException("Задачи не обнаружены!");
+
+            FileWriter fileWriter = new FileWriter(file);
+            TaskIO.write(tasks, fileWriter);
+        }
+        catch (IllegalArgumentException e)
+        {
+            System.out.println("Ошибка записи!");
+        }
     }
     public static void readText(AbstractTaskList tasks, File file) throws IOException
     {
+        if (file == null) throw new IllegalArgumentException("Файла не существует!");
+
+        if (tasks == null) throw new IllegalArgumentException("Задачи не обнаружены!");
+
         FileReader fileReader = new FileReader(file);
         TaskIO.read(tasks, fileReader);
     }
