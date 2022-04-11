@@ -1,6 +1,7 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
-import java.util.List;
+import java.util.Iterator;
+//import java.util.List;
 
 public class LinkedTaskList extends AbstractTaskList{
     int size = 0;
@@ -18,6 +19,9 @@ public class LinkedTaskList extends AbstractTaskList{
             this.prev = prev;
         }
     }
+
+    public LinkedTaskList() {}
+
     public void add(Task task) {
         if(task != null) {
             Node<Task> last = this.last;
@@ -34,6 +38,7 @@ public class LinkedTaskList extends AbstractTaskList{
             throw new IllegalArgumentException();
         }
     }
+
     public boolean remove(Task task) {
         for (Node<Task> x = first; x != null; x = x.next) {
             if (task == x.item) {
@@ -62,10 +67,34 @@ public class LinkedTaskList extends AbstractTaskList{
         }
         return false;
     }
+
+    public Iterator<Task> iterator()
+    {
+        return new Iterator()
+        {
+            private int index = -1;
+
+            public boolean hasNext() {
+                return (index + 1 < size());
+            }
+
+            public Task next() {
+                return getTask(++index);
+            }
+
+            public void remove() {
+                if (index < 0) throw new IllegalStateException("Итератор на нулевом элементе!");
+                LinkedTaskList.this.remove(getTask(index));
+                --index;
+            }
+        };
+    }
+
     public int size()
     {
         return size;
     }
+
     public Task getTask(int index) {
         if(index >= 0 && index <= size) {
             int i = 0;
@@ -82,4 +111,11 @@ public class LinkedTaskList extends AbstractTaskList{
             throw new IndexOutOfBoundsException();
         }
     }
+
+    @Override
+    public LinkedTaskList clone() {
+        return (LinkedTaskList) super.clone();
+    }
+    @Override
+    public int hashCode() { return super.hashCode(); }
 }

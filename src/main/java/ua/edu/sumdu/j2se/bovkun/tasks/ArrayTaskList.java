@@ -1,11 +1,14 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
-import java.util.LinkedList;
+//import java.util.LinkedList;
+import java.util.Iterator;
 
 public class ArrayTaskList extends AbstractTaskList{
     //ArrayList<Task> TaskList = new ArrayList<>();
     Task[] taskList = new Task[4];
     int size = 0;
+
+    public ArrayTaskList() {}
 
     public void add(Task task)
     {
@@ -60,11 +63,38 @@ public class ArrayTaskList extends AbstractTaskList{
         size--;
         return true;
     }
+
+    public Iterator<Task> iterator()
+    {
+        return new Iterator()
+        {
+            private int index = -1;
+
+            @Override
+            public boolean hasNext() {
+                return (index + 1 < size());
+            }
+
+            @Override
+            public Task next() {
+                return getTask(++index);
+            }
+
+            @Override
+            public void remove() {
+                if (index < 0) throw new IllegalStateException("Итератор на нулевом элементе!");
+                ArrayTaskList.this.remove(getTask(index));
+                index--;
+            }
+        };
+    }
+
     public int size()
     {
         return size;
         //return TaskList.size();
     }
+
     public Task getTask(int index)
     {
         if(index >= 0 && index <= size) {
@@ -76,4 +106,12 @@ public class ArrayTaskList extends AbstractTaskList{
             throw new IndexOutOfBoundsException();
         }
     }
+
+    @Override
+    public ArrayTaskList clone() {
+        return (ArrayTaskList) super.clone();
+    }
+
+    @Override
+    public int hashCode() { return super.hashCode(); }
 }
