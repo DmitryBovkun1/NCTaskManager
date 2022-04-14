@@ -249,21 +249,11 @@ public class User implements Observer {
 
         else if (month.equals("2") || month.equals("02")) {
             if(year % 4==0){
-                if(day.equals("30") || day.equals("31")){
-                    return false;
-                }
-                else{
-                    return true;
-                }
+                return !day.equals("30") && !day.equals("31");
             }
             else{
 
-                if(day.equals("29")||day.equals("30")||day.equals("31")){
-                    return false;
-                }
-                else{
-                    return true;
-                }
+                return !day.equals("29") && !day.equals("30") && !day.equals("31");
             }
         }
 
