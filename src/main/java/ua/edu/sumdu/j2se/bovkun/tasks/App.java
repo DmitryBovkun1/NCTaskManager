@@ -5,10 +5,12 @@ import java.nio.channels.FileChannel;
 import java.util.Objects;
 import java.util.Scanner;
 import java.io.IOException;
+import org.apache.log4j.Logger;
 
 public class App implements Observed {
 
     private final LinkedTaskList linkedTaskList = new LinkedTaskList();
+    private static final Logger log = Logger.getLogger(App.class);
 
     public LinkedTaskList getList()
     {
@@ -39,6 +41,7 @@ public class App implements Observed {
             if(checkObserver(observer))
             {
                 System.out.println("Пользователь уже существует!");
+                log.info("Пользователь " + observer.getName() + " уже существует!");
             }
             {
                 DataOutputStream stream1 = new DataOutputStream(fos);
@@ -48,14 +51,15 @@ public class App implements Observed {
                     stream1.writeUTF(stream2.readUTF());
                 }
                 System.out.println("Пользователя добавлено!");
+                log.info("Пользователь " + observer.getName() + " добавлен!");
             }
-
+            new File(localDir + "1").delete();
         }
         catch (IOException ex)
         {
             System.out.println("Произошла ошибка!" + ex.getMessage() + "\nПопробуйте ещё раз!");
+            log.error("Произошла ошибка при добавлении пользователя " + observer.getName() + " - " + ex.getMessage());
         }
-        new File(localDir + "1").delete();
     }
 
     @Override
@@ -85,6 +89,7 @@ public class App implements Observed {
         catch (IOException ex)
         {
             System.out.println("Произошла ошибка! " + ex.getMessage() + "\nПопробуйте ещё раз!");
+            log.error("Произошла ошибка при удалении пользователя " + observer.getName() + " - " + ex.getMessage());
         }
     }
 
@@ -93,7 +98,10 @@ public class App implements Observed {
         localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/main_user.out";
         File file = new File(localDir);
         if(!file.exists() || file.length() == 0) {
-            file.createNewFile();
+            if(file.createNewFile())
+            {
+                log.info("Файл для хранения учетных записей пользователей создан.");
+            }
         }
         else {
             try (FileInputStream fis = new FileInputStream(localDir)) {
@@ -109,7 +117,8 @@ public class App implements Observed {
                     }
                 }
             } catch (IOException ex) {
-                System.out.println("Произошла ошибка!11 " + ex.getMessage() + "\nПопробуйте ещё раз!");
+                System.out.println("Произошла ошибка! " + ex.getMessage() + "\nПопробуйте ещё раз!");
+                log.error("Произошла ошибка при проверке учетной записи пользователя " + observer.getName() + " - " + ex.getMessage());
             }
         }
         return false;
@@ -123,14 +132,17 @@ public class App implements Observed {
 
         if(checkObserver(observer)) {
             System.out.println("-------С возвращением  " + observer.getName() + " !-------");
+            log.info("Вход пользователя " + observer.getName() + " произошел успешно!");
         }
         else {
+            log.info("Пользователя с именем " + observer.getName() + " не обнаружено!");
             addObserver(observer);
         }
         observer.customFileEvent(linkedTaskList);
     }
 
     public void welcome(Observer observer) throws IOException {
+        log.info("Произошел вход в систему!");
         System.out.println("Вас приветствует программа Task Manager.\nЗдесь Вы сможете управлять своим расписанием");
         System.out.println("Для начала работы вам необходимо внести Ваше имя! Имя должно быть уникальным в системе!");
         System.out.println("Если Вы уже заходили в эту программу, то введите имя которое Вы вводили до этого!");
@@ -140,39 +152,45 @@ public class App implements Observed {
     @Override
     public void mainMenu(Observer observer) throws IOException {
         boolean repeated = true;
-        while(repeated)
-        {
-            observer.customMenuEvent();
-            Scanner in = new Scanner(System.in);
-            String action = in.nextLine();
-            switch (action)
+        while(repeated) {
+            try {
+                observer.customMenuEvent();
+                Scanner in = new Scanner(System.in);
+                String action = in.nextLine();
+                switch (action) {
+                    case "1":
+                        observer.printEvent(linkedTaskList, 0);
+                        break;
+                    case "2":
+                        observer.printEvent(linkedTaskList, 7);
+                        break;
+                    case "3":
+                        observer.addTaskEvent(linkedTaskList);
+                        break;
+                    case "4":
+                        observer.printTaskEvent(linkedTaskList);
+                        break;
+                    case "5":
+                        observer.editTaskEvent(linkedTaskList);
+                        break;
+                    case "6":
+                        observer.deleteTaskEvent(linkedTaskList);
+                        break;
+                    case "7":
+                        observer.updateTaskEvent(linkedTaskList);
+                        break;
+                    case "8":
+                        repeated = false;
+                        break;
+                    default:
+                        System.out.println("Действе под номером " + action + " не обнаружено! Попробуйте ввести что-то другое!");
+                }
+                log.info("Выбрано действие под номером - " + action + " Пользователем - " + observer.getName());
+            }
+            catch (Exception e)
             {
-                case "1":
-                    observer.printEvent(linkedTaskList, 0);
-                    break;
-                case "2":
-                    observer.printEvent (linkedTaskList, 7);
-                    break;
-                case "3":
-                    observer.addTaskEvent(linkedTaskList);
-                    break;
-                case "4":
-                    observer.printTaskEvent(linkedTaskList);
-                    break;
-                case "5":
-                    observer.editTaskEvent(linkedTaskList);
-                    break;
-                case "6":
-                    observer.deleteTaskEvent(linkedTaskList);
-                    break;
-                case "7":
-                    observer.updateTaskEvent(linkedTaskList);
-                    break;
-                case "8":
-                    repeated = false;
-                    break;
-                default:
-                    System.out.println("Действе под номером " + action + " не обнаружено! Попробуйте ввести что-то другое!");
+                System.out.println("Произошла ошибка " + e.getMessage());
+                log.error("В приложении произошла ошибка - " + e.getMessage());
             }
         }
     }

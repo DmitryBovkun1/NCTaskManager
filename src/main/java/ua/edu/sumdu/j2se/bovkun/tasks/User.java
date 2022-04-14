@@ -5,15 +5,25 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Scanner;
+import org.apache.log4j.Logger;
 
 public class User implements Observer {
     String name;
+    private static final Logger log = Logger.getLogger(Observer.class);
 
     public User() {
+        makeWorkDirectoryEvent();
+    }
+
+    private void makeWorkDirectoryEvent()
+    {
         String localDir = System.getProperty("user.dir");
         localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/";
         File file = new File(localDir);
-        file.mkdirs();
+        if (file.mkdirs())
+        {
+            log.info("Рабочая директория создана!!");
+        }
     }
 
     public void customFileEvent(AbstractTaskList abstractTaskList) throws IOException
@@ -22,12 +32,16 @@ public class User implements Observer {
         localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/TaskManager" + getName() + ".out";
         File file = new File(localDir);
         if(!file.exists() || file.length() == 0) {
-            file.createNewFile();
+            if (file.createNewFile())
+            {
+                log.info("Файл пользователя " + getName() + " создан");
+            }
         }
         else
         {
             TaskIO.readBinary(abstractTaskList, file);
         }
+        log.info("Пользователь " + getName() + " вошел в систему");
     }
 
     @Override
@@ -58,6 +72,7 @@ public class User implements Observer {
 
     private void customEditMenuEvent(Task task)
     {
+        log.info("Пользователь " + getName() + " изменяет задачу:\n" + task);
         System.out.println("------------Меню редактирования----------------");
         System.out.println("--------1.Изменить название задачи------------");
         System.out.println("-----2.Активировать/деактивировать задачу-----");
@@ -76,6 +91,7 @@ public class User implements Observer {
 
     @Override
     public void printEvent (AbstractTaskList abstractTaskList, int time) throws IOException {
+        log.info("Пользователь " + getName() + " выводит " + ((time == 0) ? " все задачи " : "задачи за "+ time + " дней"));
         try {
             if (abstractTaskList == null || abstractTaskList.size() == 0) throw new IllegalArgumentException();
             boolean find = false;
@@ -92,6 +108,7 @@ public class User implements Observer {
         catch (IllegalArgumentException e)
         {
             System.out.println("Задачи не обнаружены!");
+            log.info("Пользователь " + getName() + " вывел пустой список задач");
         }
     }
 
@@ -102,6 +119,7 @@ public class User implements Observer {
 
     public void addTaskEvent (AbstractTaskList abstractTaskList)
     {
+        log.info("Пользователь " + getName() + " добавляет задачу");
         System.out.println("Вас приветствует мастер добавления задач Task Manager!");
         Scanner in = new Scanner(System.in);
         System.out.println("Введите название задачи");
@@ -142,6 +160,7 @@ public class User implements Observer {
             LocalDateTime time = LocalDateTime.parse(getTime());
             abstractTaskList.add(new Task(title, time, active, false));
         }
+        log.info("Пользователь " + getName() + " добавил " + (repeated ? "повторяющееся " : "не повторяющееся ") + "задание " + getName());
     }
 
     private String getTime() {
@@ -425,6 +444,7 @@ public class User implements Observer {
             System.out.println("Введите название задачи которую нужно " + action + ":");
             Scanner input = new Scanner(System.in);
             String title = input.nextLine();
+            log.info("Пользователь " + getName() + " хочет " + action + " задачу под названием " + title);
 
             for (Task task : abstractTaskList) {
                 if (Objects.equals(task.getTitle(), title)) {
@@ -432,6 +452,7 @@ public class User implements Observer {
                     success = true;
                 }
             }
+            log.info("Пользователь " + getName() + (success ? "" : "не") + " обнаружил задачу под названием " + title);
             if(!success)
             {
                 throw new IllegalArgumentException();
@@ -448,6 +469,7 @@ public class User implements Observer {
         String localDir = System.getProperty("user.dir");
         localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/TaskManager" + getName() + ".out";
         TaskIO.writeBinary(abstractTaskList, new File(localDir));
+        log.info("Пользователь " + getName() + " обновил свой файл конфигурации -  " + localDir);
     }
 
 }
