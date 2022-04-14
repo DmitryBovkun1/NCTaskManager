@@ -13,13 +13,7 @@ public abstract class AbstractTaskList implements Iterable<Task>, Serializable {
     public final AbstractTaskList incoming(LocalDateTime from, LocalDateTime to)
     {
         AbstractTaskList resultList = TaskListFactory.createTaskList(ListTypes.getTypeList(this));
-        for(int i = 0; i < size(); i++)
-        {
-            if(getTask(i).nextTimeAfter(from) != null && getTask(i).nextTimeAfter(from).compareTo(to) <= 0)
-            {
-                resultList.add(getTask(i));
-            }
-        }
+        this.getStream().filter(task -> task.nextTimeAfter(from) != null && task.nextTimeAfter(from).compareTo(to) <= 0).forEach(resultList::add);
         return resultList;
     }
 
@@ -30,9 +24,9 @@ public abstract class AbstractTaskList implements Iterable<Task>, Serializable {
         {
             return true;
         }
-        if(obj instanceof AbstractTaskList)
+        if(!(obj instanceof AbstractTaskList))
         {
-            return true;
+            return false;
         }
         AbstractTaskList convert = (AbstractTaskList) obj;
         if(this.size() != convert.size())
