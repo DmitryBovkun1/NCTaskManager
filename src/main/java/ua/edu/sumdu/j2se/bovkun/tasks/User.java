@@ -26,48 +26,55 @@ public class User implements Observer {
         }
     }
 
-    public void customFileEvent(AbstractTaskList abstractTaskList) throws IOException
+    private Task searchTaskEvent(AbstractTaskList abstractTaskList)
     {
-        String localDir = System.getProperty("user.dir");
-        localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/TaskManager" + getName() + ".out";
-        File file = new File(localDir);
-        if(!file.exists() || file.length() == 0) {
-            if (file.createNewFile())
+        int i = 1;
+        System.out.println("Обнаружено - " + abstractTaskList.size() + " задач с таким именем.");
+        Task goalTask;
+        for (Task task: abstractTaskList) {
+            System.out.println( "Задача № " + i + " :\n" + task );
+        }
+        System.out.println( "Выберите номер задачи которую необходимо изменить ( допустимые индекси задач от 1 до " + abstractTaskList.size() + " )" );
+        Scanner input = new Scanner(System.in);
+        int index = input.nextInt();
+        while (!checkIntValue(index, 1, abstractTaskList.size())) {
+            System.out.println("Введено неверное значение! Попробуйте ещё раз!");
+            System.out.println("Выберите номер задачи которую необходимо изменить ( допустимые индекси задач от 1 до " + abstractTaskList.size() + " )");
+            index = input.nextInt();
+        }
+        goalTask = abstractTaskList.getTask(index - 1);
+        return goalTask;
+    }
+
+    private AbstractTaskList searchEvent(AbstractTaskList abstractTaskList, String action)
+    {
+        boolean success = false;
+        AbstractTaskList searchAbstractTaskList = TaskListFactory.createTaskList(ListTypes.getTypeList(abstractTaskList));
+        try {
+            if (abstractTaskList == null) throw new IllegalArgumentException();
+
+            System.out.println("Введите название задачи которую нужно " + action + ":");
+            Scanner input = new Scanner(System.in);
+            String title = input.nextLine();
+            log.info("Пользователь " + getName() + " хочет " + action + " задачу под названием " + title);
+
+            for (Task task : abstractTaskList) {
+                if (Objects.equals(task.getTitle(), title)) {
+                    searchAbstractTaskList.add(task);
+                    success = true;
+                }
+            }
+            log.info("Пользователь " + getName() + (success ? "" : "не") + " обнаружил задачу под названием " + title);
+            if(!success)
             {
-                log.info("Файл пользователя " + getName() + " создан");
+                throw new IllegalArgumentException();
             }
         }
-        else
+        catch (IllegalArgumentException e)
         {
-            TaskIO.readBinary(abstractTaskList, file);
+            System.out.println("Данная задача не обнаружена!");
         }
-        log.info("Пользователь " + getName() + " вошел в систему");
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName()
-    {
-        return name;
-    }
-
-    @Override
-    public void customMenuEvent()
-    {
-        System.out.println("-----------Добро пожаловать!-----------");
-        System.out.println("----------------Меню-------------------");
-        System.out.println("--------1.Список всех задач------------");
-        System.out.println("--------2.Задачи на неделю------------");
-        System.out.println("----------3.Новая задача--------------");
-        System.out.println("------4.Информация про задачу--------");
-        System.out.println("------5.Редактировать задачу--------");
-        System.out.println("---------6.Удалить задачу-----------");
-        System.out.println("-------7.Сохранить изменения-------");
-        System.out.println("--------------8.Выход---------------");
+        return searchAbstractTaskList;
     }
 
     private void customEditMenuEvent(Task task)
@@ -87,153 +94,6 @@ public class User implements Observer {
             System.out.println("----4.Редактировать дату выполнения задачи----");
         }
         System.out.println("------------------0.Выход-------------------");
-    }
-
-    @Override
-    public void printEvent (AbstractTaskList abstractTaskList, int time) throws IOException {
-        log.info("Пользователь " + getName() + " выводит " + ((time == 0) ? " все задачи " : "задачи за "+ time + " дней"));
-        try {
-            if (abstractTaskList == null || abstractTaskList.size() == 0) throw new IllegalArgumentException();
-            boolean find = false;
-            for (Task task : abstractTaskList) {
-                if (time == 0 || ((task.getTime().compareTo(task.getTime().plusWeeks(time)) >= 0 && task.getTime().compareTo(LocalDateTime.now()) <= 0))) {
-                    System.out.println(task);
-                    find = true;
-                }
-            }
-            if (!find){
-                throw new IllegalArgumentException();
-            }
-        }
-        catch (IllegalArgumentException e)
-        {
-            System.out.println("Задачи не обнаружены!");
-            log.info("Пользователь " + getName() + " вывел пустой список задач");
-        }
-    }
-
-    private boolean checkIntValue(int a, int interval1, int interval2)
-    {
-        return a >= interval1 && a <= interval2;
-    }
-
-    public void addTaskEvent (AbstractTaskList abstractTaskList)
-    {
-        log.info("Пользователь " + getName() + " добавляет задачу");
-        System.out.println("Вас приветствует мастер добавления задач Task Manager!");
-        Scanner in = new Scanner(System.in);
-        System.out.println("Введите название задачи");
-        String title = in.nextLine();
-        System.out.println("Активировать задачу (1 - ДА : 0 - НЕТ)");
-        int temp = in.nextInt();
-        while (!checkIntValue(temp, 0, 1))
-        {
-            System.out.println("Введено неверное значение! Повторите ещё раз! ");
-            System.out.println("Активировать задачу (1 - ДА : 0 - НЕТ)");
-            temp = in.nextInt();
-        }
-        boolean active = temp == 1;
-
-        System.out.println("Повторить задачу (1 - ДА : 0 - НЕТ)");
-        temp = in.nextInt();
-        while (!checkIntValue(temp, 0, 1))
-        {
-            System.out.println("Введено неверное значение! Повторите ещё раз! ");
-            System.out.println("Повторить задачу (1 - ДА : 0 - НЕТ)");
-            temp = in.nextInt();
-        }
-        boolean repeated = temp == 1;
-
-        if(repeated)
-        {
-            System.out.println("Дата начала выполнения задачи:");
-            LocalDateTime startTime = LocalDateTime.parse(getTime());
-            System.out.println("Дата конца выполнения задачи:");
-            LocalDateTime finishTime = LocalDateTime.parse(getTime());
-            System.out.println("Интервал выполнения задачи в данный период (в секундах)");
-            int interval = in.nextInt();
-            abstractTaskList.add(new Task(title, startTime, finishTime, interval, active, true));
-        }
-        else
-        {
-            System.out.println("Дата выполнения задачи:");
-            LocalDateTime time = LocalDateTime.parse(getTime());
-            abstractTaskList.add(new Task(title, time, active, false));
-        }
-        log.info("Пользователь " + getName() + " добавил " + (repeated ? "повторяющееся " : "не повторяющееся ") + "задание " + getName());
-    }
-
-    private String getTime() {
-        Scanner input = new Scanner(System.in);
-        System.out.println("В каком часу:");
-        int hour = input.nextInt();
-        while (!checkIntValue(hour, 0, 59))
-        {
-            System.out.println("Введено неверное значение! Повторите ещё раз! ");
-            System.out.println("В каком часу:");
-            hour = input.nextInt();
-        }
-
-        System.out.println("В какой минуте:");
-        int minutes = input.nextInt();
-        while (!checkIntValue(minutes, 0, 59))
-        {
-            System.out.println("Введено неверное значение! Повторите ещё раз! ");
-            System.out.println("В какой минуте:");
-            minutes = input.nextInt();
-        }
-
-        System.out.println("В какой секунде:");
-        int second = input.nextInt();
-        while (!checkIntValue(second, 0, 59))
-        {
-            System.out.println("Введено неверное значение! Повторите ещё раз! ");
-            System.out.println("В какой секунде:");
-            second = input.nextInt();
-        }
-
-        int day, month, year;
-
-        do {
-            System.out.println("Введите день месяца:");
-            day = input.nextInt();
-            while (!checkIntValue(day, 1, 31)) {
-                System.out.println("Введено неверное значение! Повторите ещё раз! ");
-                System.out.println("Введите день месяца:");
-                day = input.nextInt();
-            }
-
-            System.out.println("Введите месяц:");
-            month = input.nextInt();
-            while (!checkIntValue(month, 1, 12)) {
-                System.out.println("Введено неверное значение! Повторите ещё раз! ");
-                System.out.println("Введите месяц:");
-                month = input.nextInt();
-            }
-
-            System.out.println("Введите год:");
-            year = input.nextInt();
-            while (!checkIntValue(year, LocalDateTime.now().getYear(), 9999)) {
-                System.out.println("Введено неверное значение! Повторите ещё раз! ");
-                System.out.println("Введите год:");
-                year = input.nextInt();
-            }
-
-            if(!validate(day, month, year))
-            {
-                System.out.println("Данная дата не является валидной!");
-            }
-        } while (!validate(day, month, year));
-        return year + "-" + validateDateForCreate(month) + "-" + validateDateForCreate(day) + "T" + validateDateForCreate(hour) + ":" + validateDateForCreate(minutes) + ":" + validateDateForCreate(second);
-    }
-
-    private String validateDateForCreate(int partOfDate)
-    {
-        String value = Integer.toString(partOfDate);
-        if(value.length() == 1) {
-            value = "0" + value;
-        }
-        return value;
     }
 
     private boolean validate(int d, int m, int year){
@@ -300,6 +160,202 @@ public class User implements Observer {
         }
     }
 
+    private boolean checkIntValue(int a, int interval1, int interval2)
+    {
+        return a >= interval1 && a <= interval2;
+    }
+
+    private String validateDateForCreate(int partOfDate)
+    {
+        String value = Integer.toString(partOfDate);
+        if(value.length() == 1) {
+            value = "0" + value;
+        }
+        return value;
+    }
+
+    private String getTimeEvent() {
+        Scanner input = new Scanner(System.in);
+        System.out.println("В каком часу:");
+        int hour = input.nextInt();
+        while (!checkIntValue(hour, 0, 59))
+        {
+            System.out.println("Введено неверное значение! Повторите ещё раз! ");
+            System.out.println("В каком часу:");
+            hour = input.nextInt();
+        }
+
+        System.out.println("В какой минуте:");
+        int minutes = input.nextInt();
+        while (!checkIntValue(minutes, 0, 59))
+        {
+            System.out.println("Введено неверное значение! Повторите ещё раз! ");
+            System.out.println("В какой минуте:");
+            minutes = input.nextInt();
+        }
+
+        System.out.println("В какой секунде:");
+        int second = input.nextInt();
+        while (!checkIntValue(second, 0, 59))
+        {
+            System.out.println("Введено неверное значение! Повторите ещё раз! ");
+            System.out.println("В какой секунде:");
+            second = input.nextInt();
+        }
+
+        int day, month, year;
+
+        do {
+            System.out.println("Введите день месяца:");
+            day = input.nextInt();
+            while (!checkIntValue(day, 1, 31)) {
+                System.out.println("Введено неверное значение! Повторите ещё раз! ");
+                System.out.println("Введите день месяца:");
+                day = input.nextInt();
+            }
+
+            System.out.println("Введите месяц:");
+            month = input.nextInt();
+            while (!checkIntValue(month, 1, 12)) {
+                System.out.println("Введено неверное значение! Повторите ещё раз! ");
+                System.out.println("Введите месяц:");
+                month = input.nextInt();
+            }
+
+            System.out.println("Введите год:");
+            year = input.nextInt();
+            while (!checkIntValue(year, LocalDateTime.now().getYear(), 9999)) {
+                System.out.println("Введено неверное значение! Повторите ещё раз! ");
+                System.out.println("Введите год:");
+                year = input.nextInt();
+            }
+
+            if(!validate(day, month, year))
+            {
+                System.out.println("Данная дата не является валидной!");
+            }
+        } while (!validate(day, month, year));
+        return year + "-" + validateDateForCreate(month) + "-" + validateDateForCreate(day) + "T" + validateDateForCreate(hour) + ":" + validateDateForCreate(minutes) + ":" + validateDateForCreate(second);
+    }
+
+    public void customFileEvent(AbstractTaskList abstractTaskList) throws IOException
+    {
+        String localDir = System.getProperty("user.dir");
+        localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/TaskManager" + getName() + ".out";
+        File file = new File(localDir);
+        if(!file.exists() || file.length() == 0) {
+            if (file.createNewFile())
+            {
+                log.info("Файл пользователя " + getName() + " создан");
+            }
+        }
+        else
+        {
+            TaskIO.readBinary(abstractTaskList, file);
+        }
+        log.info("Пользователь " + getName() + " вошел в систему");
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName()
+    {
+        return name;
+    }
+
+    @Override
+    public void customMenuEvent()
+    {
+        System.out.println("-----------Добро пожаловать!-----------");
+        System.out.println("----------------Меню-------------------");
+        System.out.println("--------1.Список всех задач------------");
+        System.out.println("--------2.Задачи на неделю------------");
+        System.out.println("----------3.Новая задача--------------");
+        System.out.println("------4.Информация про задачу--------");
+        System.out.println("------5.Редактировать задачу--------");
+        System.out.println("---------6.Удалить задачу-----------");
+        System.out.println("-------7.Сохранить изменения-------");
+        System.out.println("--------------8.Выход---------------");
+    }
+
+    @Override
+    public void printEvent (AbstractTaskList abstractTaskList, int time) throws IOException {
+        log.info("Пользователь " + getName() + " выводит " + ((time == 0) ? " все задачи " : "задачи за "+ time + " дней"));
+        try {
+            if (abstractTaskList == null || abstractTaskList.size() == 0) throw new IllegalArgumentException();
+            boolean find = false;
+            for (Task task : abstractTaskList) {
+                LocalDateTime a = task.nextTimeAfter(LocalDateTime.now());
+                if (a == null) {
+                    a = task.getTime();
+                }
+
+                if (time == 0 || (a.compareTo(LocalDateTime.now()) >= 0 && a.compareTo(LocalDateTime.now().plusDays(time)) <= 0)) {
+                    System.out.println(task);
+                    find = true;
+                }
+            }
+            if (!find){
+                throw new IllegalArgumentException();
+            }
+        }
+        catch (IllegalArgumentException e)
+        {
+            System.out.println("Задачи не обнаружены!");
+            log.info("Пользователь " + getName() + " вывел пустой список задач");
+        }
+    }
+
+    public void addTaskEvent (AbstractTaskList abstractTaskList)
+    {
+        log.info("Пользователь " + getName() + " добавляет задачу");
+        System.out.println("Вас приветствует мастер добавления задач Task Manager!");
+        Scanner in = new Scanner(System.in);
+        System.out.println("Введите название задачи");
+        String title = in.nextLine();
+        System.out.println("Активировать задачу (1 - ДА : 0 - НЕТ)");
+        int temp = in.nextInt();
+        while (!checkIntValue(temp, 0, 1))
+        {
+            System.out.println("Введено неверное значение! Повторите ещё раз! ");
+            System.out.println("Активировать задачу (1 - ДА : 0 - НЕТ)");
+            temp = in.nextInt();
+        }
+        boolean active = temp == 1;
+
+        System.out.println("Повторить задачу (1 - ДА : 0 - НЕТ)");
+        temp = in.nextInt();
+        while (!checkIntValue(temp, 0, 1))
+        {
+            System.out.println("Введено неверное значение! Повторите ещё раз! ");
+            System.out.println("Повторить задачу (1 - ДА : 0 - НЕТ)");
+            temp = in.nextInt();
+        }
+        boolean repeated = temp == 1;
+
+        if(repeated)
+        {
+            System.out.println("Дата начала выполнения задачи:");
+            LocalDateTime startTime = LocalDateTime.parse(getTimeEvent());
+            System.out.println("Дата конца выполнения задачи:");
+            LocalDateTime finishTime = LocalDateTime.parse(getTimeEvent());
+            System.out.println("Интервал выполнения задачи в данный период (в секундах)");
+            int interval = in.nextInt();
+            abstractTaskList.add(new Task(title, startTime, finishTime, interval, active, true));
+        }
+        else
+        {
+            System.out.println("Дата выполнения задачи:");
+            LocalDateTime time = LocalDateTime.parse(getTimeEvent());
+            abstractTaskList.add(new Task(title, time, active, false));
+        }
+        log.info("Пользователь " + getName() + " добавил " + (repeated ? "повторяющееся " : "не повторяющееся ") + "задание " + getName());
+    }
+
     public boolean edit(AbstractTaskList abstractTaskList, Task task) {
         for (Task tempTask : abstractTaskList) {
             if (task == tempTask) {
@@ -340,12 +396,12 @@ public class User implements Observer {
                             break;
                         case "4":
                             System.out.println("Дата начала выполнения задачи:");
-                            LocalDateTime startTime = LocalDateTime.parse(getTime());
+                            LocalDateTime startTime = LocalDateTime.parse(getTimeEvent());
                             tempTask.setTime(startTime, tempTask.getEndTime(), tempTask.getRepeatInterval());
                             break;
                         case "5":
                             System.out.println("Дата конца выполнения задачи:");
-                            LocalDateTime finishTime = LocalDateTime.parse(getTime());
+                            LocalDateTime finishTime = LocalDateTime.parse(getTimeEvent());
                             tempTask.setTime(tempTask.getStartTime(), finishTime, tempTask.getRepeatInterval());
                             break;
                         case "6":
@@ -390,7 +446,7 @@ public class User implements Observer {
                             break;
                         case "4":
                             System.out.println("Дата выполнения задачи:");
-                            LocalDateTime time = LocalDateTime.parse(getTime());
+                            LocalDateTime time = LocalDateTime.parse(getTimeEvent());
                             tempTask.setTime(time);
                             break;
                         case "0":
@@ -402,57 +458,6 @@ public class User implements Observer {
             }
         }
         return true;
-    }
-
-    private Task searchTaskEvent(AbstractTaskList abstractTaskList)
-    {
-        int i = 1;
-        System.out.println("Обнаружено - " + abstractTaskList.size() + " задач с таким именем.");
-        Task goalTask;
-        for (Task task: abstractTaskList) {
-            System.out.println( "Задача № " + i + " :\n" + task );
-        }
-        System.out.println( "Выберите номер задачи которую необходимо изменить ( допустимые индекси задач от 1 до " + abstractTaskList.size() + " )" );
-        Scanner input = new Scanner(System.in);
-        int index = input.nextInt();
-        while (!checkIntValue(index, 1, abstractTaskList.size())) {
-            System.out.println("Введено неверное значение! Попробуйте ещё раз!");
-            System.out.println("Выберите номер задачи которую необходимо изменить ( допустимые индекси задач от 1 до " + abstractTaskList.size() + " )");
-            index = input.nextInt();
-        }
-        goalTask = abstractTaskList.getTask(index - 1);
-        return goalTask;
-    }
-
-    private AbstractTaskList searchEvent(AbstractTaskList abstractTaskList, String action)
-    {
-        boolean success = false;
-        AbstractTaskList searchAbstractTaskList = TaskListFactory.createTaskList(ListTypes.getTypeList(abstractTaskList));
-        try {
-            if (abstractTaskList == null) throw new IllegalArgumentException();
-
-            System.out.println("Введите название задачи которую нужно " + action + ":");
-            Scanner input = new Scanner(System.in);
-            String title = input.nextLine();
-            log.info("Пользователь " + getName() + " хочет " + action + " задачу под названием " + title);
-
-            for (Task task : abstractTaskList) {
-                if (Objects.equals(task.getTitle(), title)) {
-                    searchAbstractTaskList.add(task);
-                    success = true;
-                }
-            }
-            log.info("Пользователь " + getName() + (success ? "" : "не") + " обнаружил задачу под названием " + title);
-            if(!success)
-            {
-                throw new IllegalArgumentException();
-            }
-        }
-        catch (IllegalArgumentException e)
-        {
-            System.out.println("Данная задача не обнаружена!");
-        }
-        return searchAbstractTaskList;
     }
 
     public void updateTaskEvent(AbstractTaskList abstractTaskList) throws IOException {

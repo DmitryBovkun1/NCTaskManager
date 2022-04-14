@@ -31,7 +31,7 @@ public class Task implements Serializable {
         }
         else
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Введено некоректное значение переменной времени!");
         }
     }
 
@@ -45,7 +45,7 @@ public class Task implements Serializable {
         }
         else
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Введено некоректное значение переменной времени!");
         }
     }
 
@@ -58,7 +58,7 @@ public class Task implements Serializable {
         }
         else
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Введено некоректное значение переменной времени!");
         }
     }
     public Task(String title, LocalDateTime start, LocalDateTime end, int interval, boolean active, boolean repeated)
@@ -71,7 +71,7 @@ public class Task implements Serializable {
         }
         else
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Введено некоректное значение переменной времени!");
         }
     }
     public Task(String title, LocalDateTime time, LocalDateTime start, LocalDateTime end, int interval, boolean active, boolean repeat) {
@@ -165,7 +165,7 @@ public class Task implements Serializable {
         }
         else
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Введено некоректное значение переменной времени!");
         }
     }
     public boolean isRepeated()
@@ -220,7 +220,7 @@ public class Task implements Serializable {
         if(this.repeated)
         {
             temp += "Да";
-            temp += ", Начало - " + this.start + ", Конец - " + this.end + ", Интервал - " + this.interval + "\n";
+            temp += ", Начало - " + this.start + ", Конец - " + this.end + ", Интервал - " + this.interval + ", Время следующего выполнения - " + nextTimeAfter(LocalDateTime.now()) + "\n";
         }
         else
         {
