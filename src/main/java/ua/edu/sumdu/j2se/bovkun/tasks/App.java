@@ -154,6 +154,7 @@ public class App implements Observed {
         boolean repeated = true;
         while(repeated) {
             try {
+                observer.notifyEvent(linkedTaskList);
                 observer.customMenuEvent();
                 Scanner in = new Scanner(System.in);
                 String action = in.nextLine();

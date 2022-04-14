@@ -4,14 +4,15 @@ import java.io.IOException;
 import java.util.List;
 
 public interface Observer {
-    public String getName();
-    public void setName(String name);
-    public void customMenuEvent();
-    public void printEvent (AbstractTaskList abstractTaskList, int time) throws IOException;
-    public void addTaskEvent (AbstractTaskList abstractTaskList);
-    public void printTaskEvent(AbstractTaskList abstractTaskList);
-    public void deleteTaskEvent(AbstractTaskList abstractTaskList);
-    public void editTaskEvent(AbstractTaskList abstractTaskList);
-    public void updateTaskEvent(AbstractTaskList abstractTaskList) throws IOException;
-    public void customFileEvent(AbstractTaskList abstractTaskList) throws IOException;
+    String getName();
+    void setName(String name);
+    void customMenuEvent();
+    void printEvent(AbstractTaskList abstractTaskList, int time) throws IOException;
+    void addTaskEvent(AbstractTaskList abstractTaskList);
+    void printTaskEvent(AbstractTaskList abstractTaskList);
+    void deleteTaskEvent(AbstractTaskList abstractTaskList);
+    void editTaskEvent(AbstractTaskList abstractTaskList);
+    void updateTaskEvent(AbstractTaskList abstractTaskList) throws IOException;
+    void customFileEvent(AbstractTaskList abstractTaskList) throws IOException;
+    void notifyEvent(AbstractTaskList abstractTaskList);
 }

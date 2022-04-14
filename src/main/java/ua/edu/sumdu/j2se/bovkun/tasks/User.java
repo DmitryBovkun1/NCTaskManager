@@ -238,6 +238,7 @@ public class User implements Observer {
         return year + "-" + validateDateForCreate(month) + "-" + validateDateForCreate(day) + "T" + validateDateForCreate(hour) + ":" + validateDateForCreate(minutes) + ":" + validateDateForCreate(second);
     }
 
+    @Override
     public void customFileEvent(AbstractTaskList abstractTaskList) throws IOException
     {
         String localDir = System.getProperty("user.dir");
@@ -287,19 +288,19 @@ public class User implements Observer {
         log.info("Пользователь " + getName() + " выводит " + ((time == 0) ? " все задачи " : "задачи за "+ time + " дней"));
         try {
             if (abstractTaskList == null || abstractTaskList.size() == 0) throw new IllegalArgumentException();
-            boolean find = false;
-            for (Task task : abstractTaskList) {
-                LocalDateTime a = task.nextTimeAfter(LocalDateTime.now());
-                if (a == null) {
-                    a = task.getTime();
-                }
-
-                if (time == 0 || (a.compareTo(LocalDateTime.now()) >= 0 && a.compareTo(LocalDateTime.now().plusDays(time)) <= 0)) {
-                    System.out.println(task);
-                    find = true;
+            AbstractTaskList resultTaskList = TaskListFactory.createTaskList(ListTypes.getTypeList(abstractTaskList));
+            if (time == 0)
+            {
+                for (Task task:abstractTaskList) {
+                    resultTaskList.add(task);
                 }
             }
-            if (!find){
+            else
+            {
+                resultTaskList = (AbstractTaskList) Tasks.incoming(abstractTaskList, LocalDateTime.now(), LocalDateTime.now().plusDays(time));
+            }
+            System.out.println(resultTaskList);
+            if (resultTaskList.size() == 0){
                 throw new IllegalArgumentException();
             }
         }
@@ -460,6 +461,7 @@ public class User implements Observer {
         return true;
     }
 
+    @Override
     public void updateTaskEvent(AbstractTaskList abstractTaskList) throws IOException {
         String localDir = System.getProperty("user.dir");
         localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/TaskManager" + getName() + ".out";
@@ -467,4 +469,14 @@ public class User implements Observer {
         log.info("Пользователь " + getName() + " обновил свой файл конфигурации -  " + localDir);
     }
 
+    @Override
+    public void notifyEvent(AbstractTaskList abstractTaskList) {
+        AbstractTaskList resultTaskList;
+        resultTaskList = (AbstractTaskList) Tasks.incoming(abstractTaskList, LocalDateTime.now(), LocalDateTime.now().plusHours(1));
+        if (resultTaskList.size() != 0)
+        {
+            System.out.println("Внимание!! В течении часа должны выполнится следующие задачи:");
+            System.out.println(resultTaskList);
+        }
+    }
 }
