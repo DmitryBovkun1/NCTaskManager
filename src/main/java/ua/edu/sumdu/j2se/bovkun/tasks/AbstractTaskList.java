@@ -21,9 +21,9 @@ public abstract class AbstractTaskList implements Iterable<Task> {
         {
             return true;
         }
-        if(obj instanceof AbstractTaskList)
+        if(!(obj instanceof AbstractTaskList))
         {
-            return true;
+            return false;
         }
         AbstractTaskList convert = (AbstractTaskList) obj;
         if(this.size() != convert.size())
