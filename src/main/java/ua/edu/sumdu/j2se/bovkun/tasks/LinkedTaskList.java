@@ -1,6 +1,9 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Objects;
+import java.util.stream.Stream;
 //import java.util.List;
 
 public class LinkedTaskList extends AbstractTaskList{
@@ -118,4 +121,15 @@ public class LinkedTaskList extends AbstractTaskList{
     }
     @Override
     public int hashCode() { return super.hashCode(); }
+
+    @Override
+    public Stream<Task> getStream()
+    {
+        Task[] tasks = new Task[this.size()];
+        for(int i = 0; i < this.size(); i++)
+        {
+            tasks[i]=this.getTask(i);
+        }
+        return Arrays.stream(tasks).filter(Objects::nonNull);
+    }
 }
