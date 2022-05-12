@@ -1,9 +1,10 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.time.LocalDateTime;
 
-public class Task {
+public class Task implements Serializable {
     private String title;
     private LocalDateTime time;
     private LocalDateTime start;
@@ -33,6 +34,23 @@ public class Task {
             throw new IllegalArgumentException();
         }
     }
+
+
+    public Task(String title, LocalDateTime time, boolean active, boolean repeated)
+    {
+        if(time != null) {
+            this.repeated = repeated;
+            setTitle(title);
+            setTime(time);
+            setActive(active);
+        }
+        else
+        {
+            throw new IllegalArgumentException();
+        }
+    }
+
+
     public Task(String title, LocalDateTime start, LocalDateTime end, int interval)
     {
         if(start != null && end != null && interval > 0) {
@@ -45,6 +63,21 @@ public class Task {
             throw new IllegalArgumentException();
         }
     }
+
+    public Task(String title, LocalDateTime start, LocalDateTime end, int interval, boolean active, boolean repeated)
+    {
+        if(start != null && end != null && interval > 0) {
+            setActive(active);
+            this.repeated = repeated;
+            setTitle(title);
+            setTime(start, end, interval);
+        }
+        else
+        {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public Task(String title, LocalDateTime time, LocalDateTime start, LocalDateTime end, int interval, boolean active, boolean repeat) {
         this.title = title;
         this.active = active;
