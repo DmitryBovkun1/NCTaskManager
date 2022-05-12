@@ -1,12 +1,13 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
 import java.util.Objects;
+import java.time.LocalDateTime;
 
 public class Task {
     private String title;
-    private int time;
-    private int start;
-    private int end;
+    private LocalDateTime time;
+    private LocalDateTime start;
+    private LocalDateTime end;
     private int interval;
     private boolean active=false;
     private boolean repeated;
@@ -17,12 +18,12 @@ public class Task {
     {
         repeated = false;
         setTitle(title);
-        setTime(0);
+        setTime(LocalDateTime.now());
     }
 
-    public Task(String title, int time)
+    public Task(String title, LocalDateTime time)
     {
-        if(time >= 0) {
+        if(time != null) {
             repeated = false;
             setTitle(title);
             setTime(time);
@@ -32,9 +33,9 @@ public class Task {
             throw new IllegalArgumentException();
         }
     }
-    public Task(String title, int start, int end, int interval)
+    public Task(String title, LocalDateTime start, LocalDateTime end, int interval)
     {
-        if(start >= 0 && end >= 0 && interval > 0) {
+        if(start != null && end != null && interval > 0) {
             repeated = true;
             setTitle(title);
             setTime(start, end, interval);
@@ -44,7 +45,7 @@ public class Task {
             throw new IllegalArgumentException();
         }
     }
-    public Task(String title, int time, int start, int end, int interval, boolean active, boolean repeat) {
+    public Task(String title, LocalDateTime time, LocalDateTime start, LocalDateTime end, int interval, boolean active, boolean repeat) {
         this.title = title;
         this.active = active;
         this.repeated = repeat;
@@ -69,7 +70,7 @@ public class Task {
     {
         this.active=active;
     }
-    public int getTime()
+    public LocalDateTime getTime()
     {
         if(!isRepeated()) {
             return time;
@@ -79,9 +80,9 @@ public class Task {
             return getStartTime();
         }
     }
-    public void setTime(int time)
+    public void setTime(LocalDateTime time)
     {
-        if(time >= 0) {
+        if(time != null) {
             this.time = time;
             if (isRepeated()) {
                 repeated = false;
@@ -91,7 +92,7 @@ public class Task {
             throw new IllegalArgumentException();
         }
     }
-    public int getStartTime()
+    public LocalDateTime getStartTime()
     {
         if(!isRepeated()) {
             return getTime();
@@ -100,7 +101,7 @@ public class Task {
             return start;
         }
     }
-    public int getEndTime()
+    public LocalDateTime getEndTime()
     {
         if(!isRepeated()) {
             return getTime();
@@ -119,9 +120,9 @@ public class Task {
             return 0;
         }
     }
-    public void setTime(int start, int end, int interval)
+    public void setTime(LocalDateTime start, LocalDateTime end, int interval)
     {
-        if(start >= 0 && end >= 0 && interval > 0) {
+        if(start != null && end != null && interval > 0) {
             this.start = start;
             this.end = end;
             this.interval = interval;
@@ -138,36 +139,36 @@ public class Task {
     {
         return repeated;
     }
-    public int nextTimeAfter(int current)
+    public LocalDateTime nextTimeAfter(LocalDateTime current)
     {
         if (active)
         {
-            if (time > current && time != 0)
+            if (time != null && 0 > current.compareTo(time))
             {
                 return time;
             }
 
-            if(start > current && start != 0)
+            if(start != null && 0 > current.compareTo(start))
             {
                 return start;
             }
-            else if(start != 0)
+            else if(start != null)
             {
-                int tempTime = start;
+                LocalDateTime tempTime = start;
 
                 do {
-                    if(tempTime + interval <= end)
+                    if(tempTime.plusSeconds(interval).compareTo(end) <= 0)
                     {
-                        tempTime += interval;
+                        tempTime = tempTime.plusSeconds(interval);
                     }
                     else {
-                        return -1;
+                        return null;
                     }
-                } while(current >= tempTime);
+                } while(current.compareTo(tempTime) >= 0);
                 return tempTime;
             }
         }
-        return -1;
+        return null;
     }
 
     @Override
