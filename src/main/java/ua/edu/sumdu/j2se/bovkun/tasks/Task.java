@@ -35,6 +35,7 @@ public class Task implements Serializable {
         }
     }
 
+
     public Task(String title, LocalDateTime time, boolean active, boolean repeated)
     {
         if(time != null) {
@@ -49,6 +50,7 @@ public class Task implements Serializable {
         }
     }
 
+
     public Task(String title, LocalDateTime start, LocalDateTime end, int interval)
     {
         if(start != null && end != null && interval > 0) {
@@ -61,6 +63,7 @@ public class Task implements Serializable {
             throw new IllegalArgumentException();
         }
     }
+
     public Task(String title, LocalDateTime start, LocalDateTime end, int interval, boolean active, boolean repeated)
     {
         if(start != null && end != null && interval > 0) {
@@ -74,6 +77,7 @@ public class Task implements Serializable {
             throw new IllegalArgumentException();
         }
     }
+
     public Task(String title, LocalDateTime time, LocalDateTime start, LocalDateTime end, int interval, boolean active, boolean repeat) {
         this.title = title;
         this.active = active;

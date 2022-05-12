@@ -1,5 +1,6 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
@@ -9,7 +10,6 @@ public abstract class AbstractTaskList implements Iterable<Task>, Serializable {
     public abstract boolean remove(Task task);
     public abstract int size();
     public abstract Task getTask(int index);
-
     public final AbstractTaskList incoming(LocalDateTime from, LocalDateTime to)
     {
         AbstractTaskList resultList = TaskListFactory.createTaskList(ListTypes.getTypeList(this));
