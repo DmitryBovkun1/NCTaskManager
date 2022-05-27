@@ -78,41 +78,6 @@ public class App implements Observed {
         new File(localDir + "1").delete();
     }
 
-    @Override
-    public void removeObserver(Observer observer)
-    {
-        String localDir = System.getProperty("user.dir");
-        localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/main_user.out";
-        try(FileInputStream fis=new FileInputStream(localDir);
-            FileOutputStream fos=new FileOutputStream(localDir+"1"))
-        {
-            if(checkObserver(observer)) {
-                DataInputStream stream1 = new DataInputStream(fis);
-                DataOutputStream stream2 = new DataOutputStream(fos);
-                while ((stream1.read()) != -1) {
-                    String tempStringUsername = stream1.readUTF();
-                    String tempStringPassword = stream1.readUTF();
-                    if (!Objects.equals(observer.getName(), tempStringUsername)) {
-                        stream2.writeUTF(tempStringUsername);
-                        stream2.writeUTF(tempStringPassword);
-                    }
-                }
-
-                copyFileUsingChannel(new File(localDir + "1"), new File(localDir));
-            }
-            else
-            {
-                System.out.println("Пользователя с таким именем не существует!");
-            }
-        }
-        catch (IOException ex)
-        {
-            System.out.println("Произошла ошибка! " + ex.getMessage() + "\nПопробуйте ещё раз!");
-            log.error("Произошла ошибка при удалении пользователя " + observer.getName() + " - " + ex.getMessage());
-        }
-        new File(localDir + "1").delete();
-    }
-
     private boolean checkObserver(Observer observer) throws IOException {
         String localDir = System.getProperty("user.dir");
         localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/main_user.out";
