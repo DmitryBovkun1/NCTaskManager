@@ -182,7 +182,7 @@ public class User implements Observer {
         Scanner input = new Scanner(System.in);
         System.out.println("В каком часу:");
         int hour = input.nextInt();
-        while (!checkIntValue(hour, 0, 59))
+        while (!checkIntValue(hour, 0, 23))
         {
             System.out.println("Введено неверное значение! Повторите ещё раз! ");
             System.out.println("В каком часу:");
@@ -370,7 +370,8 @@ public class User implements Observer {
             LocalDateTime time = LocalDateTime.parse(getTimeEvent());
             abstractTaskList.add(new Task(title, time, active, false));
         }
-        log.info("Пользователь " + getName() + " добавил " + (repeated ? "повторяющееся " : "не повторяющееся ") + "задание " + getName());
+        System.out.println("Задача под названием " + title + " успешно добавлена!");
+        log.info("Пользователь " + getName() + " добавил " + (repeated ? "повторяющееся " : "не повторяющееся ") + "задание " + title);
     }
 
     public boolean edit(AbstractTaskList abstractTaskList, Task task) {
