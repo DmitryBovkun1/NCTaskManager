@@ -122,7 +122,7 @@ public class Task implements Serializable {
             }
         }
         else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Введено некоректное значение переменной времени!");
         }
     }
     public LocalDateTime getStartTime()

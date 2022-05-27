@@ -29,7 +29,7 @@ public class ArrayTaskList extends AbstractTaskList{
         }
         else
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Пустое значение задания!");
         }
     }
     public boolean remove(Task task)
@@ -106,7 +106,7 @@ public class ArrayTaskList extends AbstractTaskList{
         }
         else
         {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Индекс за пределами коллекции!");
         }
     }
 

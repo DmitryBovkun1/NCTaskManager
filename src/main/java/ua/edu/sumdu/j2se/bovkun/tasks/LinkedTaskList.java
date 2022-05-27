@@ -3,7 +3,6 @@ package ua.edu.sumdu.j2se.bovkun.tasks;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.Scanner;
 import java.util.stream.Stream;
 //import java.util.List;
 
@@ -108,7 +107,7 @@ public class LinkedTaskList extends AbstractTaskList{
             return task;
         }
         else {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Индекс за пределами коллекции!");
         }
     }
 
