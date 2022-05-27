@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 
 public class User implements Observer {
     String name;
+    String password;
+
     private static final Logger log = Logger.getLogger(Observer.class);
 
     public User() {
@@ -33,8 +35,9 @@ public class User implements Observer {
         Task goalTask;
         for (Task task: abstractTaskList) {
             System.out.println( "Задача № " + i + " :\n" + task );
+            i++;
         }
-        System.out.println( "Выберите номер задачи которую необходимо изменить ( допустимые индекси задач от 1 до " + abstractTaskList.size() + " )" );
+        System.out.println( "Выберите номер задачи которую необходимо изменить ( допустимые индексы задач от 1 до " + abstractTaskList.size() + " )" );
         Scanner input = new Scanner(System.in);
         int index = input.nextInt();
         while (!checkIntValue(index, 1, abstractTaskList.size())) {
@@ -127,9 +130,10 @@ public class User implements Observer {
         AbstractTaskList searchAbstractTaskList = searchEvent(abstractTaskList, "посмотреть");
         if(searchAbstractTaskList.size() != 0) {
             int i = 1;
-            System.out.println("Обнаружено - " + abstractTaskList.size() + " задач с таким именем.");
+            System.out.println("Обнаружено - " + searchAbstractTaskList.size() + " задач с таким именем.");
             for (Task task : searchAbstractTaskList) {
                 System.out.println( "Задача № " + i + " :\n" + task );
+                i++;
             }
         }
     }
@@ -263,9 +267,20 @@ public class User implements Observer {
     }
 
     @Override
+    public void setPassword(String passwd) {
+        this.password = passwd;
+    }
+
+    @Override
     public String getName()
     {
         return name;
+    }
+
+    @Override
+    public String getPassword()
+    {
+        return password;
     }
 
     @Override
@@ -284,7 +299,7 @@ public class User implements Observer {
     }
 
     @Override
-    public void printEvent (AbstractTaskList abstractTaskList, int time) throws IOException {
+    public void printEvent (AbstractTaskList abstractTaskList, int time) {
         log.info("Пользователь " + getName() + " выводит " + ((time == 0) ? " все задачи " : "задачи за "+ time + " дней"));
         try {
             if (abstractTaskList == null || abstractTaskList.size() == 0) throw new IllegalArgumentException();
@@ -311,6 +326,7 @@ public class User implements Observer {
         }
     }
 
+    @Override
     public void addTaskEvent (AbstractTaskList abstractTaskList)
     {
         log.info("Пользователь " + getName() + " добавляет задачу");

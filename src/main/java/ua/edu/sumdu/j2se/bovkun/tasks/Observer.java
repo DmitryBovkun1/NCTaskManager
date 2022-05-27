@@ -5,7 +5,9 @@ import java.util.List;
 
 public interface Observer {
     String getName();
+    String getPassword();
     void setName(String name);
+    void setPassword(String passwd);
     void customMenuEvent();
     void printEvent(AbstractTaskList abstractTaskList, int time) throws IOException;
     void addTaskEvent(AbstractTaskList abstractTaskList);
