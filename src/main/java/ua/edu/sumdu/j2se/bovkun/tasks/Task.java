@@ -51,7 +51,7 @@ public class Task implements Serializable {
 
     public Task(String title, LocalDateTime start, LocalDateTime end, int interval)
     {
-        if(start != null && end != null && interval > 0) {
+        if(start != null && end != null && interval > 0 && start.compareTo(end) < 0) {
             repeated = true;
             setTitle(title);
             setTime(start, end, interval);
@@ -63,7 +63,7 @@ public class Task implements Serializable {
     }
     public Task(String title, LocalDateTime start, LocalDateTime end, int interval, boolean active, boolean repeated)
     {
-        if(start != null && end != null && interval > 0) {
+        if(start != null && end != null && interval > 0 && start.compareTo(end) < 0) {
             setActive(active);
             this.repeated = repeated;
             setTitle(title);
@@ -155,7 +155,7 @@ public class Task implements Serializable {
     }
     public void setTime(LocalDateTime start, LocalDateTime end, int interval)
     {
-        if(start != null && end != null && interval > 0) {
+        if(start != null && end != null && interval > 0 && start.compareTo(end) < 0) {
             this.start = start;
             this.end = end;
             this.interval = interval;
