@@ -56,13 +56,13 @@ public class User implements Observer {
         try {
             if (abstractTaskList == null) throw new IllegalArgumentException();
 
-            System.out.println("Введите название задачи которую нужно " + action + ":");
+            System.out.println("Введите название задачи (полностью или частично) которую нужно " + action + ":");
             Scanner input = new Scanner(System.in);
             String title = input.nextLine();
             log.info("Пользователь " + getName() + " хочет " + action + " задачу под названием " + title);
 
             for (Task task : abstractTaskList) {
-                if (Objects.equals(task.getTitle(), title)) {
+                if (task.getTitle().toLowerCase().contains(title.toLowerCase())) {
                     searchAbstractTaskList.add(task);
                     success = true;
                 }
@@ -483,6 +483,7 @@ public class User implements Observer {
         String localDir = System.getProperty("user.dir");
         localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/TaskManager" + getName() + ".out";
         TaskIO.writeBinary(abstractTaskList, new File(localDir));
+        System.out.println("Обновление информации пользователя " + getName() + " прошло успешно!");
         log.info("Пользователь " + getName() + " обновил свой файл конфигурации -  " + localDir);
     }
 
