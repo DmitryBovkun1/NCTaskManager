@@ -160,7 +160,8 @@ public class User implements Observer {
 
         if(searchAbstractTaskList.size() != 0)
         {
-            while (edit (abstractTaskList, (searchTaskEvent(searchAbstractTaskList))));
+            Task searchTask = searchTaskEvent(searchAbstractTaskList);
+            while (edit (abstractTaskList, searchTask));
         }
     }
 
@@ -377,6 +378,7 @@ public class User implements Observer {
     public boolean edit(AbstractTaskList abstractTaskList, Task task) {
         for (Task tempTask : abstractTaskList) {
             if (task == tempTask) {
+                System.out.println("\nРедактируемая задача: \n" + task);
                 customEditMenuEvent(task);
                 Scanner in = new Scanner(System.in);
                 String chooseEdit;
@@ -410,6 +412,10 @@ public class User implements Observer {
                                 temp = in.nextInt();
                             }
                             boolean repeated = temp == 1;
+
+                            if(!repeated) {
+                                tempTask.setTime(tempTask.getStartTime());
+                            }
                             tempTask.setRepeated(repeated);
                             break;
                         case "4":
@@ -460,6 +466,9 @@ public class User implements Observer {
                                 temp = in.nextInt();
                             }
                             boolean repeated = temp == 1;
+                            if(repeated) {
+                                tempTask.setTime(tempTask.getTime(), tempTask.getTime().plusSeconds(1), 1);
+                            }
                             tempTask.setRepeated(repeated);
                             break;
                         case "4":

@@ -220,7 +220,7 @@ public class Task implements Serializable {
         if(this.repeated)
         {
             temp += "Да";
-            temp += ", Начало - " + this.start + ", Конец - " + this.end + ", Интервал - " + this.interval + ", Время следующего выполнения - " + nextTimeAfter(LocalDateTime.now()) + "\n";
+            temp += ", Начало - " + this.start + ", Конец - " + this.end + ", Интервал - " + this.interval + ", Время следующего выполнения - " + ((nextTimeAfter(LocalDateTime.now()) == null) ? "Время выполнения истекло!" : nextTimeAfter(LocalDateTime.now()) + "\n");
         }
         else
         {
