@@ -1,6 +1,7 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
 import java.io.Serializable;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.time.LocalDateTime;
 
@@ -220,12 +221,12 @@ public class Task implements Serializable {
         if(this.repeated)
         {
             temp += "Да";
-            temp += ", Начало - " + this.start + ", Конец - " + this.end + ", Интервал - " + this.interval + ", Время следующего выполнения - " + ((nextTimeAfter(LocalDateTime.now()) == null) ? "Время выполнения истекло!" : nextTimeAfter(LocalDateTime.now()) + "\n");
+            temp += ", Начало - " + this.start.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")) + ", Конец - " + this.end.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")) + ", Интервал - " + this.interval + ", Время следующего выполнения - " + ((nextTimeAfter(LocalDateTime.now()) == null) ? "Время выполнения истекло!" : nextTimeAfter(LocalDateTime.now()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))) + "\n";
         }
         else
         {
             temp += "Нет";
-            temp += ", Время - " + this.time + "\n";
+            temp += ", Время - " + this.time.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")) + "\n";
         }
         return temp;
     }

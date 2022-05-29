@@ -3,8 +3,13 @@ package ua.edu.sumdu.j2se.bovkun.tasks;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.stream.Collectors;
+
 import org.apache.log4j.Logger;
 
 public class User implements Observer {
@@ -304,20 +309,32 @@ public class User implements Observer {
         log.info("Пользователь " + getName() + " выводит " + ((time == 0) ? " все задачи " : "задачи за "+ time + " дней"));
         try {
             if (abstractTaskList == null || abstractTaskList.size() == 0) throw new IllegalArgumentException();
-            AbstractTaskList resultTaskList = TaskListFactory.createTaskList(ListTypes.getTypeList(abstractTaskList));
             if (time == 0)
             {
+                System.out.println("------ЗАДАЧИ В ТЕКУЩЕМ СПИСКЕ-------");
+                AbstractTaskList resultTaskList = TaskListFactory.createTaskList(ListTypes.getTypeList(abstractTaskList));
                 for (Task task:abstractTaskList) {
                     resultTaskList.add(task);
+                }
+                System.out.println(resultTaskList);
+                if (resultTaskList.size() == 0){
+                    throw new IllegalArgumentException();
                 }
             }
             else
             {
-                resultTaskList = (AbstractTaskList) Tasks.incoming(abstractTaskList, LocalDateTime.now(), LocalDateTime.now().plusDays(time));
-            }
-            System.out.println(resultTaskList);
-            if (resultTaskList.size() == 0){
-                throw new IllegalArgumentException();
+                System.out.println("-СПИСОК ИСПОЛНЯЕМЫХ ЗАДАЧ НА " + time + " ДНЕЙ-");
+                SortedMap<LocalDateTime, Set<Task>> resultTaskList = Tasks.calendar(abstractTaskList, LocalDateTime.now(), LocalDateTime.now().plusDays(time));
+                for (var el : resultTaskList.entrySet()) {
+                    System.out.println(el.getKey().format(DateTimeFormatter.ofPattern("dd.MM.yyyy => HH:mm:ss")
+                            .withZone(ZoneId.systemDefault())) + ": "
+                            + el.getValue().stream().map(Task::getTitle).map(list -> String.join("\n", list))
+                            .collect(Collectors.joining(", "))
+                    );
+                }
+                if (resultTaskList.size() == 0){
+                    throw new IllegalArgumentException();
+                }
             }
         }
         catch (IllegalArgumentException e)
@@ -392,6 +409,7 @@ public class User implements Observer {
                             tempTask.setTitle(title);
                             break;
                         case "2":
+                            System.out.println("Активировать задачу (1 - ДА : 0 - НЕТ)");
                             int temp = in.nextInt();
                             while (!checkIntValue(temp, 0, 1))
                             {
@@ -446,6 +464,7 @@ public class User implements Observer {
                             tempTask.setTitle(title);
                             break;
                         case "2":
+                            System.out.println("Активировать задачу (1 - ДА : 0 - НЕТ)");
                             int temp = in.nextInt();
                             while (!checkIntValue(temp, 0, 1))
                             {
