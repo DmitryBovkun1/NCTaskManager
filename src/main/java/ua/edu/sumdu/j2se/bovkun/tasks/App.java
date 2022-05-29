@@ -17,28 +17,11 @@ public class App implements Observed {
     {
         return linkedTaskList;
     }
-
-    private static void copyFileUsingChannel(File source, File dest) throws IOException {
-        FileChannel sourceChannel = null;
-        FileChannel destChannel = null;
-        try {
-            sourceChannel = new FileInputStream(source).getChannel();
-            destChannel = new FileOutputStream(dest).getChannel();
-            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-        }
-        finally{
-            sourceChannel.close();
-            destChannel.close();
-        }
-    }
-
     @Override
     public void addObserver(Observer observer) throws IOException {
         String localDir = System.getProperty("user.dir");
         localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/main_user.out";
-        copyFileUsingChannel(new File(localDir), new File(localDir + "1"));
-        try(FileOutputStream fos=new FileOutputStream(localDir);
-        FileInputStream fis=new FileInputStream(localDir + "1")) {
+        try(FileOutputStream fos=new FileOutputStream(localDir, true)) {
             if(checkObserver(observer))
             {
                 System.out.println("Пользователь уже существует!");
@@ -60,12 +43,8 @@ public class App implements Observed {
                 } while (!Objects.equals(passwd, passwdRepeat));
                 observer.setPassword(Security.hash(passwd));
                 DataOutputStream stream1 = new DataOutputStream(fos);
-                DataInputStream stream2 = new DataInputStream(fis);
                 stream1.writeUTF(observer.getName());
                 stream1.writeUTF(observer.getPassword());
-                while (fis.available() > 0) {
-                    stream1.writeUTF(stream2.readUTF());
-                }
                 System.out.println("Пользователя добавлено!");
                 log.info("Пользователь " + observer.getName() + " добавлен!");
             }
@@ -75,7 +54,6 @@ public class App implements Observed {
             System.out.println("Произошла ошибка!" + ex.getMessage() + "\nПопробуйте ещё раз!");
             log.error("Произошла ошибка при добавлении пользователя " + observer.getName() + " - " + ex.getMessage());
         }
-        new File(localDir + "1").delete();
     }
 
     private boolean checkObserver(Observer observer) throws IOException {
