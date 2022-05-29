@@ -2,7 +2,7 @@ package ua.edu.sumdu.j2se.bovkun.tasks;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
-import java.security.NoSuchAlgorithmException;
+import java.util.InputMismatchException;
 import java.util.Objects;
 import java.util.Scanner;
 import java.io.IOException;
@@ -212,10 +212,15 @@ public class App implements Observed {
                 }
                 log.info("Выбрано действие под номером - " + action + " Пользователем - " + observer.getName());
             }
+            catch (InputMismatchException e)
+            {
+                System.out.println("Произошла критическая ошибка несоответствия типа!!" + "\n");
+                log.error("В приложении произошла ошибка - несоответствия типа");
+            }
             catch (Exception e)
             {
-                System.out.println("Произошла ошибка " + e.getMessage());
-                log.error("В приложении произошла ошибка - " + e.getMessage());
+                System.out.println("Произошла " + ((e.getMessage() != null) ? " ошибка " + e.getMessage() : "непредвиденная ошибка! Обратитесь в службу поддержки! ") + "\n");
+                log.error("В приложении произошла " + ((e.getMessage() != null) ? "ошибка " + e.getMessage() : "непредвиденная ошибка "));
             }
         }
     }
