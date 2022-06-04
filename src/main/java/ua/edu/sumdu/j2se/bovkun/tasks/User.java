@@ -186,57 +186,57 @@ public class User implements Observer {
 
     private String getTimeEvent() {
         Scanner input = new Scanner(System.in);
-        System.out.println("В каком часу:");
+        System.out.println("В каком часу (от 0 до 23):");
         int hour = input.nextInt();
         while (!checkIntValue(hour, 0, 23))
         {
             System.out.println("Введено неверное значение! Повторите ещё раз! ");
-            System.out.println("В каком часу:");
+            System.out.println("В каком часу (от 0 до 23):");
             hour = input.nextInt();
         }
 
-        System.out.println("В какой минуте:");
+        System.out.println("В какой минуте (от 0 до 59):");
         int minutes = input.nextInt();
         while (!checkIntValue(minutes, 0, 59))
         {
             System.out.println("Введено неверное значение! Повторите ещё раз! ");
-            System.out.println("В какой минуте:");
+            System.out.println("В какой минуте (от 0 до 59):");
             minutes = input.nextInt();
         }
 
-        System.out.println("В какой секунде:");
+        System.out.println("В какой секунде (от 0 до 59):");
         int second = input.nextInt();
         while (!checkIntValue(second, 0, 59))
         {
             System.out.println("Введено неверное значение! Повторите ещё раз! ");
-            System.out.println("В какой секунде:");
+            System.out.println("В какой секунде (от 0 до 59):");
             second = input.nextInt();
         }
 
         int day, month, year;
 
         do {
-            System.out.println("Введите день месяца:");
+            System.out.println("Введите день месяца (от 1 до 31):");
             day = input.nextInt();
             while (!checkIntValue(day, 1, 31)) {
                 System.out.println("Введено неверное значение! Повторите ещё раз! ");
-                System.out.println("Введите день месяца:");
+                System.out.println("Введите день месяца (от 1 до 31):");
                 day = input.nextInt();
             }
 
-            System.out.println("Введите месяц:");
+            System.out.println("Введите месяц (от 1 до 12):");
             month = input.nextInt();
             while (!checkIntValue(month, 1, 12)) {
                 System.out.println("Введено неверное значение! Повторите ещё раз! ");
-                System.out.println("Введите месяц:");
+                System.out.println("Введите месяц (от 1 до 12):");
                 month = input.nextInt();
             }
 
-            System.out.println("Введите год:");
+            System.out.println("Введите год (от "+ LocalDateTime.now().getYear() + " до 9999):");
             year = input.nextInt();
             while (!checkIntValue(year, LocalDateTime.now().getYear(), 9999)) {
                 System.out.println("Введено неверное значение! Повторите ещё раз! ");
-                System.out.println("Введите год:");
+                System.out.println("Введите год (от "+ LocalDateTime.now().getYear() + " до 9999):");
                 year = input.nextInt();
             }
 
@@ -287,6 +287,15 @@ public class User implements Observer {
     public String getPassword()
     {
         return password;
+    }
+
+    public void startMenuEvent()
+    {
+        System.out.println("----------Добро пожаловать!-----------");
+        System.out.println("----------Выберите действие------------");
+        System.out.println("-----------1.Авторизация--------------");
+        System.out.println("-----------2.Регистрация-------------");
+        System.out.println("--------------0.Выход---------------");
     }
 
     @Override
