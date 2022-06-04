@@ -1,7 +1,6 @@
 package ua.edu.sumdu.j2se.bovkun.tasks;
 
 import java.io.*;
-import java.nio.channels.FileChannel;
 import java.util.InputMismatchException;
 import java.util.Objects;
 import java.util.Scanner;
@@ -27,6 +26,7 @@ public class App implements Observed {
                 System.out.println("Пользователь уже существует!");
                 log.info("Пользователь " + observer.getName() + " уже существует!");
             }
+            else
             {
                 String passwd;
                 String passwdRepeat;
@@ -40,13 +40,21 @@ public class App implements Observed {
                     {
                         System.out.println("Пароли не совпадают!! Попробуйте ещё раз");
                     }
+                    else if(passwd == null || passwd.equals(""))
+                    {
+                        System.out.println("Ошибка! Пароль не может быть пустым!!");
+                        log.info("Пользователь " + observer.getName() + " попытался войти под пустым паролем!");
+                        throw new IllegalArgumentException("Введено некоректное значение переменной пароля!");
+                    }
                 } while (!Objects.equals(passwd, passwdRepeat));
-                observer.setPassword(Security.hash(passwd));
-                DataOutputStream stream1 = new DataOutputStream(fos);
-                stream1.writeUTF(observer.getName());
-                stream1.writeUTF(observer.getPassword());
-                System.out.println("Пользователя добавлено!");
-                log.info("Пользователь " + observer.getName() + " добавлен!");
+                if(!passwd.equals("")) {
+                    observer.setPassword(Security.hash(passwd));
+                    DataOutputStream stream1 = new DataOutputStream(fos);
+                    stream1.writeUTF(observer.getName());
+                    stream1.writeUTF(observer.getPassword());
+                    System.out.println("Пользователя добавлено!");
+                    log.info("Пользователь " + observer.getName() + " добавлен!");
+                }
             }
         }
         catch (IOException ex)
@@ -95,48 +103,46 @@ public class App implements Observed {
         System.out.println("Пожалуйста введите ваше имя:");
         Scanner in = new Scanner(System.in);
         String temp = in.nextLine();
+        if(temp == null || temp.equals(""))
+        {
+            System.out.println("Ошибка! Имя не может быть пустым!!");
+            throw new IllegalArgumentException("Введено некорректное значение имени пользователя! Попробуйте ещё раз!");
+        }
+        else {
+            observer.setName(temp);
 
-        observer.setName(temp);
-
-        if(checkObserver(observer) && Objects.equals(action, "1")) {
-            int trys = 3;
-            while(trys != 0 && !success)
-            {
-                System.out.println("Введите пароль пользователя " + observer.getName() + " ( осталось " + trys + " попытки )");
-                String tempPassword = in.nextLine();
-                if (Objects.equals(Security.hash(tempPassword), observer.getPassword()))
-                {
-                    success = true;
+            if (checkObserver(observer) && Objects.equals(action, "1")) {
+                int trys = 3;
+                while (trys != 0 && !success) {
+                    System.out.println("Введите пароль пользователя " + observer.getName() + " ( осталось " + trys + " попытки )");
+                    String tempPassword = in.nextLine();
+                    if (Objects.equals(Security.hash(tempPassword), observer.getPassword())) {
+                        success = true;
+                    }
+                    trys--;
                 }
-                trys--;
+                if (success) {
+                    System.out.println("-------С возвращением  " + observer.getName() + " !-------");
+                    log.info("Вход пользователя " + observer.getName() + " произошел успешно!");
+                } else {
+                    System.out.println("Вход выполнен неудачно для пользователя " + observer.getName());
+                    log.info("Вход пользователя " + observer.getName() + " произошел неудачно! Пароль не совпадает");
+                }
+                return success;
+            } else if (Objects.equals(action, "1")) {
+                System.out.println("Пользователя с именем " + observer.getName() + " не существует!");
+                System.out.println("Зарегестрируйте его!");
+                return false;
             }
-            if(success)
-            {
-                System.out.println("-------С возвращением  " + observer.getName() + " !-------");
-                log.info("Вход пользователя " + observer.getName() + " произошел успешно!");
+            if (!checkObserver(observer) && Objects.equals(action, "2")) {
+                log.info("Пользователя с именем " + observer.getName() + " не обнаружено!");
+                addObserver(observer);
+                success = true;
+            } else if (Objects.equals(action, "2")) {
+                System.out.println("Пользователь с именем " + observer.getName() + " уже существует!");
+                System.out.println("Войдите под его учетными данными!");
+                log.info("Регестрация пользователя " + observer.getName() + " произошла неудачно! Пользователь существует!");
             }
-            else {
-                System.out.println("Вход выполнен неудачно для пользователя " + observer.getName());
-                log.info("Вход пользователя " + observer.getName() + " произошел неудачно! Пароль не совпадает");
-            }
-            return success;
-        }
-        else if(Objects.equals(action, "1"))
-        {
-            System.out.println("Пользователя с именем " + observer.getName() + " не существует!");
-            System.out.println("Зарегестрируйте его!");
-            return false;
-        }
-        if (!checkObserver(observer) && Objects.equals(action, "2")) {
-            log.info("Пользователя с именем " + observer.getName() + " не обнаружено!");
-            addObserver(observer);
-            success = true;
-        }
-        else if (Objects.equals(action, "2"))
-        {
-            System.out.println("Пользователь с именем " + observer.getName() + " уже существует!");
-            System.out.println("Войдите под его учетными данными!");
-            log.info("Регестрация пользователя " + observer.getName() + " произошла неудачно! Пользователь существует!");
         }
         return success;
     }
@@ -161,27 +167,39 @@ public class App implements Observed {
 
     }
 
-    public void welcomeMenu(Observer observer) throws IOException {
+    public void welcomeMenu(Observer observer) {
         boolean status = false;
         welcome();
         while(repeated && !status) {
-            observer.startMenuEvent();
-            Scanner in = new Scanner(System.in);
-            String action = in.nextLine();
-            switch (action) {
-                case "1":
-                case "2":
-                    status = checkLogin(observer, action);
-                    if(status){
-                        observer.customFileEvent(linkedTaskList);
-                    }
-                    break;
-                case "0":
-                    repeated = false;
-                    break;
-                default:
-                    System.out.println("Действе под номером " + action + " не обнаружено! Попробуйте ввести что-то другое!");
-                    break;
+            try {
+                observer.startMenuEvent();
+                Scanner in = new Scanner(System.in);
+                String action = in.nextLine();
+                switch (action) {
+                    case "1":
+                    case "2":
+                        status = checkLogin(observer, action);
+                        if (status) {
+                            observer.customFileEvent(linkedTaskList);
+                        }
+                        break;
+                    case "0":
+                        repeated = false;
+                        break;
+                    default:
+                        System.out.println("Действе под номером " + action + " не обнаружено! Попробуйте ввести что-то другое!");
+                        break;
+                }
+            }
+            catch (IllegalArgumentException e)
+            {
+                System.out.println(e.getMessage());
+                log.error("В приложении произошла ошибка - " + e.getMessage());
+            }
+            catch (Exception e)
+            {
+                System.out.println("Произошла " + ((e.getMessage() != null) ? " ошибка " + e.getMessage() : "непредвиденная ошибка! Обратитесь в службу поддержки! ") + "\n");
+                log.error("В приложении произошла " + ((e.getMessage() != null) ? "ошибка " + e.getMessage() : "непредвиденная ошибка "));
             }
         }
     }
