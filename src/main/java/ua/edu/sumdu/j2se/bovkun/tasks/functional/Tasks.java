@@ -1,4 +1,9 @@
-package ua.edu.sumdu.j2se.bovkun.tasks;
+package ua.edu.sumdu.j2se.bovkun.tasks.functional;
+
+import ua.edu.sumdu.j2se.bovkun.tasks.basic.AbstractTaskList;
+import ua.edu.sumdu.j2se.bovkun.tasks.basic.ListTypes;
+import ua.edu.sumdu.j2se.bovkun.tasks.basic.Task;
+import ua.edu.sumdu.j2se.bovkun.tasks.basic.TaskListFactory;
 
 import java.time.LocalDateTime;
 import java.util.*;

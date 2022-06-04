@@ -1,15 +1,14 @@
-package ua.edu.sumdu.j2se.bovkun.tasks;
+package ua.edu.sumdu.j2se.bovkun.tasks.functional;
+
+import ua.edu.sumdu.j2se.bovkun.tasks.basic.AbstractTaskList;
 
 import java.io.IOException;
-import java.util.List;
 
 public interface Observer {
     String getName();
     String getPassword();
     void setName(String name);
     void setPassword(String passwd);
-    void startMenuEvent();
-    void customMenuEvent();
     void printEvent(AbstractTaskList abstractTaskList, int time) throws IOException;
     void addTaskEvent(AbstractTaskList abstractTaskList);
     void printTaskEvent(AbstractTaskList abstractTaskList);

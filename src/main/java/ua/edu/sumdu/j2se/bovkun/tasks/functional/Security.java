@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.bovkun.tasks;
+package ua.edu.sumdu.j2se.bovkun.tasks.functional;
 import java.math.BigInteger;
 import java.security.*;
 

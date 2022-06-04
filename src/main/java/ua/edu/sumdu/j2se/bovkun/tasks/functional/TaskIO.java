@@ -1,6 +1,8 @@
-package ua.edu.sumdu.j2se.bovkun.tasks;
+package ua.edu.sumdu.j2se.bovkun.tasks.functional;
 
 import com.google.gson.*;
+import ua.edu.sumdu.j2se.bovkun.tasks.basic.AbstractTaskList;
+import ua.edu.sumdu.j2se.bovkun.tasks.basic.Task;
 
 import java.io.*;
 import java.lang.reflect.Type;

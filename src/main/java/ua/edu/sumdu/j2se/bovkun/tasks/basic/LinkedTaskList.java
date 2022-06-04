@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.bovkun.tasks;
+package ua.edu.sumdu.j2se.bovkun.tasks.basic;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 //import java.util.List;
 
-public class LinkedTaskList extends AbstractTaskList{
+public class LinkedTaskList extends AbstractTaskList {
     int size = 0;
     Node<Task> first;
     Node<Task> last;

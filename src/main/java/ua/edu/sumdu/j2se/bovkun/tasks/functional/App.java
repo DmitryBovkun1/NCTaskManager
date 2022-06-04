@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.bovkun.tasks;
+package ua.edu.sumdu.j2se.bovkun.tasks.functional;
 
 import java.io.*;
 import java.util.InputMismatchException;
@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.io.IOException;
 import org.apache.log4j.Logger;
+import ua.edu.sumdu.j2se.bovkun.tasks.basic.LinkedTaskList;
 
 public class App implements Observed {
 
@@ -160,19 +161,13 @@ public class App implements Observed {
         }
     }
 
-    public void welcome() {
-        log.info("Произошел вход в систему!");
-        System.out.println("Вас приветствует программа Task Manager.\nЗдесь Вы сможете управлять своим расписанием");
-        System.out.println("Для начала работы вам необходимо выбрать действие для входа!");
-
-    }
-
     public void welcomeMenu(Observer observer) {
         boolean status = false;
-        welcome();
+        log.info("Произошел вход в систему!");
+        View.welcome();
         while(repeated && !status) {
             try {
-                observer.startMenuEvent();
+                View.startMenuEvent();
                 Scanner in = new Scanner(System.in);
                 String action = in.nextLine();
                 switch (action) {
@@ -209,7 +204,7 @@ public class App implements Observed {
         while(repeated) {
             try {
                 observer.notifyEvent(linkedTaskList);
-                observer.customMenuEvent();
+                View.customMenuEvent();
                 Scanner in = new Scanner(System.in);
                 String action = in.nextLine();
                 switch (action) {

@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.bovkun.tasks;
+package ua.edu.sumdu.j2se.bovkun.tasks.basic;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
