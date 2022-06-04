@@ -8,6 +8,7 @@ public interface Observer {
     String getPassword();
     void setName(String name);
     void setPassword(String passwd);
+    void startMenuEvent();
     void customMenuEvent();
     void printEvent(AbstractTaskList abstractTaskList, int time) throws IOException;
     void addTaskEvent(AbstractTaskList abstractTaskList);

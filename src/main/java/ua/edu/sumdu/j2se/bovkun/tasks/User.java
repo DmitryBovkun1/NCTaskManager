@@ -289,6 +289,7 @@ public class User implements Observer {
         return password;
     }
 
+    @Override
     public void startMenuEvent()
     {
         System.out.println("----------Добро пожаловать!-----------");

@@ -12,13 +12,13 @@ public class App implements Observed {
 
     private final LinkedTaskList linkedTaskList = new LinkedTaskList();
     private static final Logger log = Logger.getLogger(App.class);
-
+    private boolean repeated = true;
     public LinkedTaskList getList()
     {
         return linkedTaskList;
     }
     @Override
-    public void addObserver(Observer observer) throws IOException {
+    public void addObserver(Observer observer) {
         String localDir = System.getProperty("user.dir");
         localDir += "\\src/main/java/ua/edu/sumdu/j2se/bovkun/tasks/file/main_user.out";
         try(FileOutputStream fos=new FileOutputStream(localDir, true)) {
@@ -89,7 +89,7 @@ public class App implements Observed {
         return false;
     }
 
-    public boolean checkLogin(Observer observer) throws IOException {
+    public boolean checkLogin(Observer observer, String action) throws IOException {
         boolean success = false;
 
         System.out.println("Пожалуйста введите ваше имя:");
@@ -98,7 +98,7 @@ public class App implements Observed {
 
         observer.setName(temp);
 
-        if(checkObserver(observer)) {
+        if(checkObserver(observer) && Objects.equals(action, "1")) {
             int trys = 3;
             while(trys != 0 && !success)
             {
@@ -119,11 +119,24 @@ public class App implements Observed {
                 System.out.println("Вход выполнен неудачно для пользователя " + observer.getName());
                 log.info("Вход пользователя " + observer.getName() + " произошел неудачно! Пароль не совпадает");
             }
+            return success;
         }
-        else {
+        else if(Objects.equals(action, "1"))
+        {
+            System.out.println("Пользователя с именем " + observer.getName() + " не существует!");
+            System.out.println("Зарегестрируйте его!");
+            return false;
+        }
+        if (!checkObserver(observer) && Objects.equals(action, "2")) {
             log.info("Пользователя с именем " + observer.getName() + " не обнаружено!");
             addObserver(observer);
             success = true;
+        }
+        else if (Objects.equals(action, "2"))
+        {
+            System.out.println("Пользователь с именем " + observer.getName() + " уже существует!");
+            System.out.println("Войдите под его учетными данными!");
+            log.info("Регестрация пользователя " + observer.getName() + " произошла неудачно! Пользователь существует!");
         }
         return success;
     }
@@ -131,8 +144,7 @@ public class App implements Observed {
     @Override
     public void run(Observer observer) {
         try {
-            while (!welcome(observer));
-            observer.customFileEvent(linkedTaskList);
+            welcomeMenu(observer);
             mainMenu(observer);
         }
         catch (Exception e)
@@ -142,18 +154,40 @@ public class App implements Observed {
         }
     }
 
-    @Override
-    public boolean welcome(Observer observer) throws IOException {
+    public void welcome() {
         log.info("Произошел вход в систему!");
         System.out.println("Вас приветствует программа Task Manager.\nЗдесь Вы сможете управлять своим расписанием");
-        System.out.println("Для начала работы вам необходимо внести Ваше имя! Имя должно быть уникальным в системе!");
-        System.out.println("Если Вы уже заходили в эту программу, то введите имя которое Вы вводили до этого!");
-        return checkLogin(observer);
+        System.out.println("Для начала работы вам необходимо выбрать действие для входа!");
+
+    }
+
+    public void welcomeMenu(Observer observer) throws IOException {
+        boolean status = false;
+        welcome();
+        while(repeated && !status) {
+            observer.startMenuEvent();
+            Scanner in = new Scanner(System.in);
+            String action = in.nextLine();
+            switch (action) {
+                case "1":
+                case "2":
+                    status = checkLogin(observer, action);
+                    if(status){
+                        observer.customFileEvent(linkedTaskList);
+                    }
+                    break;
+                case "0":
+                    repeated = false;
+                    break;
+                default:
+                    System.out.println("Действе под номером " + action + " не обнаружено! Попробуйте ввести что-то другое!");
+                    break;
+            }
+        }
     }
 
     @Override
     public void mainMenu(Observer observer) {
-        boolean repeated = true;
         while(repeated) {
             try {
                 observer.notifyEvent(linkedTaskList);
