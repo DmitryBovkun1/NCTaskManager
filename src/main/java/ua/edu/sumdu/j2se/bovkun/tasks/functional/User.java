@@ -210,7 +210,7 @@ public class User implements Observer {
     @Override
     public void notifyEvent(AbstractTaskList abstractTaskList) {
         AbstractTaskList resultTaskList;
-        resultTaskList = (AbstractTaskList) Tasks.incoming(abstractTaskList, LocalDateTime.now(), LocalDateTime.now().plusHours(1));
+        resultTaskList = (AbstractTaskList) Tasks.incoming(abstractTaskList, LocalDateTime.now(), LocalDateTime.now().plusMinutes(10));
         if (resultTaskList.size() != 0)
         {
             System.out.println("Внимание!! В течении часа должны выполнится следующие задачи:");
